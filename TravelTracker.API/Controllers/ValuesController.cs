@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using TravelTracker.API.Data;
 
 namespace TravelTracker.API.Controllers
 {
@@ -10,10 +11,18 @@ namespace TravelTracker.API.Controllers
     [ApiController]
     public class ValuesController : ControllerBase
     {
+        public TravelTrackerDbContext _Context { get; set; }
+
+        public ValuesController(TravelTrackerDbContext context)
+        {
+            _Context = context;
+            _Context.Database.EnsureCreated();
+        }
         // GET api/values
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
+
             return new string[] { "value1", "value2" };
         }
 
