@@ -17,13 +17,23 @@ namespace TravelTracker.API.Controllers
         {
             _Context = context;
             _Context.Database.EnsureCreated();
+          //  _Context.Points.Add(new PointDataModel{
+          //      Latitude=50.076984,
+          //      Longitude=19.788205
+          //  });
+          // _Context.Points.Add(new PointDataModel{
+          //     Latitude=5.076984,
+          //     Longitude=1.788205
+          // });
+          //  _Context.SaveChanges();
+            
         }
         // GET api/values
         [HttpGet]
-        public ActionResult<IEnumerable<string>> Get()
+        public IActionResult Get()
         {
-
-            return new string[] { "value1", "value2" };
+            //_Context.Points.ToList();
+            return Ok(_Context.Points.ToList());
         }
 
         // GET api/values/5
