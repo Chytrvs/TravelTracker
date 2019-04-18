@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TravelTracker.API.Data
 {
-    public class PointDataModel
+    public class Point
     {   
         [Key]
         public int Id { get; set; }

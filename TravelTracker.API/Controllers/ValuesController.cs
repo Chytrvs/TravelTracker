@@ -44,8 +44,9 @@ namespace TravelTracker.API.Controllers
         }
 
         // POST api/values
+        
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post(double lon)
         {
         }
 
@@ -53,6 +54,7 @@ namespace TravelTracker.API.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            
         }
 
         // DELETE api/values/5
