@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using TravelTracker.API.Data.Repositories;
+using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data;
 using System.Threading.Tasks;
 
@@ -16,8 +17,8 @@ namespace TravelTracker.API.Controllers
             this.repository = repository;
         }
         [HttpPost]
-        public async Task<IActionResult> RegisterUser(string username,string password){
-            User user = await repository.RegisterUser(username,password);
+        public async Task<IActionResult> RegisterUser(RegisterUserDTO RegisterUserDTO){
+            User user = await repository.RegisterUser(RegisterUserDTO.Username,RegisterUserDTO.Password);
             if(user==null){
                 return BadRequest("User already exists");
             }
