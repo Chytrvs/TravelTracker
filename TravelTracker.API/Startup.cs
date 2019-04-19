@@ -11,8 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using TravelTracker.API.Data.Repositories;
 using TravelTracker.API.Data;
-
 namespace TravelTracker.API
 {
     public class Startup
@@ -31,6 +31,7 @@ namespace TravelTracker.API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
+            services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
