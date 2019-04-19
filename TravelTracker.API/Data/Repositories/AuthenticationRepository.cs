@@ -67,6 +67,7 @@ namespace TravelTracker.API.Data.Repositories
             user.PasswordSalt = hashedBundle.PasswordSalt;
             user.Username = username;
             await _context.Users.AddAsync(user);
+            await _context.SaveChangesAsync();
             return user;
         }
 
