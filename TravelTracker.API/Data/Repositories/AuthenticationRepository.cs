@@ -23,9 +23,36 @@ namespace TravelTracker.API.Data.Repositories
         {
             _context = context;
         }
-        public Task<User> LoginUser(string username, string password)
+        public async Task<User> LoginUser(string username, string password)
         {
-            throw new System.NotImplementedException();
+            User user = await _context.Users.FirstOrDefaultAsync(x=>x.Username==username);
+            if(user==null){
+                return null;
+            }
+            if(!VerifyUser(username,password,user)){
+                return null;
+            }
+            return user;
+        }
+
+        private bool VerifyUser(string username, string password, User user)
+        {
+            var hmac = new System.Security.Cryptography.HMACSHA512(user.PasswordSalt);
+            using (hmac)
+            {
+                    return ByteArrayCompare(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)),user.PasswordHash);
+            }
+        }
+        private bool ByteArrayCompare(byte[] a1, byte[] a2)
+        {
+            if (a1.Length != a2.Length)
+                return false;
+
+            for (int i=0; i<a1.Length; i++)
+                if (a1[i]!=a2[i])
+                    return false;
+
+            return true;
         }
 
         public async Task<User> RegisterUser(string username, string password)
