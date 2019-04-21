@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelTracker.API.Data;
 
@@ -9,6 +10,7 @@ namespace TravelTracker.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ValuesController : ControllerBase
     {
         public TravelTrackerDbContext _Context { get; set; }
@@ -33,7 +35,7 @@ namespace TravelTracker.API.Controllers
         public IActionResult Get()
         {
             //_Context.Points.ToList();
-            return Ok(_Context.Points.ToList());
+            return Ok(_Context.Users.ToList());
         }
 
         // GET api/values/5
@@ -44,8 +46,9 @@ namespace TravelTracker.API.Controllers
         }
 
         // POST api/values
+        
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post(double lon)
         {
         }
 
@@ -53,6 +56,7 @@ namespace TravelTracker.API.Controllers
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
         {
+            
         }
 
         // DELETE api/values/5

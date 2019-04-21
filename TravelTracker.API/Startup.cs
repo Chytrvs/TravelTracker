@@ -13,6 +13,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using TravelTracker.API.Data.Repositories;
 using TravelTracker.API.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+
 namespace TravelTracker.API
 {
     public class Startup
@@ -32,6 +36,17 @@ namespace TravelTracker.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
+                (options=>{
+                    var signingKey = Configuration.GetSection("Jwt:SigningSecret").Value;
+                    options.TokenValidationParameters = new TokenValidationParameters{
+                        ValidateIssuer=false,
+                        ValidateAudience=false,
+                        ValidateIssuerSigningKey=true,
+                        IssuerSigningKey=new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey))
+                        
+                    };
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -49,6 +64,7 @@ namespace TravelTracker.API
 
             //app.UseHttpsRedirection();
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseAuthentication();
             app.UseMvc();
         }
     }

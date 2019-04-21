@@ -1,3 +1,4 @@
 .vscode
 bin
 obj
+TravelTracker.API/appsettings.json
