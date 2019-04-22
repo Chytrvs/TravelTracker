@@ -55,7 +55,7 @@ namespace TravelTracker.API.Data.Repositories
             return true;
         }
 
-        public async Task<User> RegisterUser(string username, string password)
+        public async Task<User> RegisterUser(string username, string password,string email)
         {
             if (await DoesUserExist(username))
             {
@@ -66,6 +66,7 @@ namespace TravelTracker.API.Data.Repositories
             user.PasswordHash = hashedBundle.PasswordHash;
             user.PasswordSalt = hashedBundle.PasswordSalt;
             user.Username = username;
+            user.Email=email;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;

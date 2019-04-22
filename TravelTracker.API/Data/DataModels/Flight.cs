@@ -8,8 +8,8 @@ namespace TravelTracker.API.Data.DataModels
         [Key]
         public int Id { get; set; }
         
-        public Point FlightStartingPoint { get; set; }
+        public Airport FlightStartingPoint { get; set; }
         
-        public Point FlightEndingPoint { get; set; }
+        public Airport FlightEndingPoint { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace TravelTracker.API.Controllers
         }
         [HttpPost]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO RegisterUserDTO){
-            User user = await repository.RegisterUser(RegisterUserDTO.Username,RegisterUserDTO.Password);
+            User user = await repository.RegisterUser(RegisterUserDTO.Username,RegisterUserDTO.Password,RegisterUserDTO.Email);
             if(user==null){
                 return BadRequest("User already exists");
             }

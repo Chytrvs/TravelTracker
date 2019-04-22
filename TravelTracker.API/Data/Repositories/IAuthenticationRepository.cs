@@ -4,7 +4,7 @@ namespace TravelTracker.API.Data.Repositories
 {
     public interface IAuthenticationRepository
     {
-        Task<User> RegisterUser(string username, string password);
+        Task<User> RegisterUser(string username, string password, string email);
         Task<User> LoginUser(string username,string password);
         Task<bool> DoesUserExist(string username);
     }

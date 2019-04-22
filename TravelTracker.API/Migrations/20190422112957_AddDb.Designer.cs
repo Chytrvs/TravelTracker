@@ -3,42 +3,23 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TravelTracker.API.Data;
 
 namespace TravelTracker.API.Migrations
 {
     [DbContext(typeof(TravelTrackerDbContext))]
-    partial class TravelTrackerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190422112957_AddDb")]
+    partial class AddDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.2.3-servicing-35854")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("TravelTracker.API.Data.Airport", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Acronym")
-                        .IsRequired();
-
-                    b.Property<double>("Latitude");
-
-                    b.Property<double>("Longitude");
-
-                    b.Property<string>("Name")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Airports");
-                });
 
             modelBuilder.Entity("TravelTracker.API.Data.DataModels.Flight", b =>
                 {
@@ -78,6 +59,21 @@ namespace TravelTracker.API.Migrations
                     b.ToTable("Trips");
                 });
 
+            modelBuilder.Entity("TravelTracker.API.Data.Point", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<double>("Latitude");
+
+                    b.Property<double>("Longitude");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Points");
+                });
+
             modelBuilder.Entity("TravelTracker.API.Data.User", b =>
                 {
                     b.Property<int>("Id")
@@ -103,11 +99,11 @@ namespace TravelTracker.API.Migrations
 
             modelBuilder.Entity("TravelTracker.API.Data.DataModels.Flight", b =>
                 {
-                    b.HasOne("TravelTracker.API.Data.Airport", "FlightEndingPoint")
+                    b.HasOne("TravelTracker.API.Data.Point", "FlightEndingPoint")
                         .WithMany()
                         .HasForeignKey("FlightEndingPointId");
 
-                    b.HasOne("TravelTracker.API.Data.Airport", "FlightStartingPoint")
+                    b.HasOne("TravelTracker.API.Data.Point", "FlightStartingPoint")
                         .WithMany()
                         .HasForeignKey("FlightStartingPointId");
 
