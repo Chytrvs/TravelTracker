@@ -18,7 +18,7 @@ namespace TravelTracker.API.Controllers
         public ValuesController(TravelTrackerDbContext context)
         {
             _Context = context;
-            _Context.Database.EnsureCreated();
+           // _Context.Database.EnsureCreated();
           //  _Context.Points.Add(new PointDataModel{
           //      Latitude=50.076984,
           //      Longitude=19.788205

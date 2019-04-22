@@ -36,6 +36,7 @@ namespace TravelTracker.API
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
+            services.AddScoped<ITripRepository,TripRepository>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
                 (options=>{
                     var signingKey = Configuration.GetSection("Jwt:SigningSecret").Value;
