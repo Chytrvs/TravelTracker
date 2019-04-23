@@ -2,3 +2,4 @@
 bin
 obj
 TravelTracker.API/appsettings.json
+TravelTracker.API/appsettings.Development.json
