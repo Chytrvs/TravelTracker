@@ -11,6 +11,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 
+//TODO Make sure that emails are unique
+//TODO Implement .net core identities
+//TODO Make sure user can only access his own flights
+//TODO Cleanup login action
+
 namespace TravelTracker.API.Controllers
 {
     [Route("api/[controller]/[action]")]

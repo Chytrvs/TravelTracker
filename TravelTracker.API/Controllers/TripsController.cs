@@ -6,6 +6,11 @@ using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
 
+//TODO Add action to add flights to a given trip
+//TODO Make sure each flight is attached to a user
+//TODO Add action to return user trips
+
+
 namespace TravelTracker.API.Controllers
 {
     [Route("api/[controller]/[action]")]
