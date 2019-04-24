@@ -15,17 +15,6 @@ namespace TravelTracker.API.Data.Repositories
         {
             _context = Context;
         }
-
-        public async Task<Trip> AddTrip(Trip trip)
-        {
-            var res=_context.Trips.FirstOrDefaultAsync(x=>x.Id==trip.Id);
-            if(res!=null){
-                return null;
-            }
-            await _context.Trips.AddAsync(trip);
-            await _context.SaveChangesAsync();
-            return trip;
-        }
         public async Task<Flight> AddFlight(FlightDTO flightDTO)
         {
             Airport DepartureAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightDTO.DepartureAirportAcronym);
@@ -43,16 +32,6 @@ namespace TravelTracker.API.Data.Repositories
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
             return flight;
-        }
-
-        public async Task<Trip> GetTrip(int id)
-        {
-            return await _context.Trips.FirstOrDefaultAsync(x=>x.Id==id);
-        }
-
-        public async Task<List<Trip>> GetUserTrips(string username)
-        {
-            throw new System.NotImplementedException();
         }
 
         public async Task<Airport> AddAirport(Airport airport)

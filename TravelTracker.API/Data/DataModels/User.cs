@@ -15,6 +15,6 @@ namespace TravelTracker.API.Data
         public byte[] PasswordHash { get; set; }
         [Required]
         public byte[] PasswordSalt { get; set; }
-        public List<Trip> UserTrips { get; set; }
+        public List<Flight> UserFlights { get; set; }=new List<Flight>();
     }
 }

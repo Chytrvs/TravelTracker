@@ -23,20 +23,6 @@ namespace TravelTracker.API.Controllers
         {
             _repository = repository;
         }
-
-        [HttpGet]
-        public async Task<IActionResult> ReturnTrips(){
-               
-            return Ok();
-            
-        }
-        public async Task<IActionResult> AddTrip(Trip trip){
-            var response =await _repository.AddTrip(trip);
-            if(response!=null){
-                return Ok(response);
-            }
-            return BadRequest("Trip already exists");
-        }
         public async Task<IActionResult> AddFlight(FlightDTO flightDTO){
             Flight flight =await _repository.AddFlight(flightDTO);
             if(flight!=null){
