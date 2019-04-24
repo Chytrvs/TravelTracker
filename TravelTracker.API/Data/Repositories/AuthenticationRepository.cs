@@ -8,6 +8,8 @@ namespace TravelTracker.API.Data.Repositories
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly TravelTrackerDbContext _context;
+        private readonly IUserRepository _userRepo;
+
         private struct HashedPasswordBundle
         {
 
@@ -19,9 +21,10 @@ namespace TravelTracker.API.Data.Repositories
                 PasswordSalt = passwordSalt;
             }
         }
-        public AuthenticationRepository(TravelTrackerDbContext context)
+        public AuthenticationRepository(TravelTrackerDbContext context,IUserRepository userRepo)
         {
             _context = context;
+            _userRepo = userRepo;
         }
         public async Task<User> LoginUser(string username, string password)
         {
@@ -57,7 +60,7 @@ namespace TravelTracker.API.Data.Repositories
 
         public async Task<User> RegisterUser(string username, string password,string email)
         {
-            if (await DoesUserExist(username))
+            if (await _userRepo.DoesUserExist(username))
             {
                 return null;
             }
@@ -82,20 +85,6 @@ namespace TravelTracker.API.Data.Repositories
                     hmac.Key
                 );
             }
-        }
-
-        public async Task<bool> DoesUserExist(string username)
-        {
-            if (await _context.Users.AnyAsync(x => x.Username == username))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-
         }
     }
 }
