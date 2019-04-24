@@ -10,13 +10,19 @@ namespace TravelTracker.API.Data.Repositories
     public class TripRepository : ITripRepository
     {
         private readonly TravelTrackerDbContext _context;
+        private readonly IUserRepository _userRepo;
 
-        public TripRepository(TravelTrackerDbContext Context)
+        public TripRepository(TravelTrackerDbContext Context,IUserRepository userRepo)
         {
             _context = Context;
+            _userRepo = userRepo;
         }
         public async Task<Flight> AddFlight(FlightDTO flightDTO)
         {
+            User user=await _userRepo.GetUser(flightDTO.Username);
+            if(user==null)
+                return null;
+
             Airport DepartureAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightDTO.DepartureAirportAcronym);
             if(DepartureAirport==null)
                 return null;
@@ -28,7 +34,7 @@ namespace TravelTracker.API.Data.Repositories
             Flight flight=new Flight();
             flight.FlightDepartureAirport=DepartureAirport;
             flight.FlightDestinationAirport=DestinationAirport;
-
+            flight.User=user;
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
             return flight;
@@ -42,6 +48,11 @@ namespace TravelTracker.API.Data.Repositories
             await _context.Airports.AddAsync(airport);
             await _context.SaveChangesAsync();
             return airport;
+        }
+
+        public Task<List<Flight>> GetUsersFlights(string username)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
