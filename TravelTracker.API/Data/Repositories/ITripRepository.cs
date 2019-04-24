@@ -7,8 +7,8 @@ namespace TravelTracker.API.Data.Repositories
 {
     public interface ITripRepository
     {
-        Task<Flight> AddFlight(FlightDTO flightDTO);
+        Task<FlightResponseDTO> AddFlight(FlightRequestDTO flightRequestDTO);
         Task<Airport> AddAirport(Airport airport);
-        Task<List<Flight>> GetUsersFlights(string username);
+        Task<List<FlightResponseDTO>> GetUserFlights(string username);
     }
 }

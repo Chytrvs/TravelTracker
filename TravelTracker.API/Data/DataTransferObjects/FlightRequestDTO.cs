@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TravelTracker.API.Data.DataTransferObjects
 {
-    public class FlightDTO
+    public class FlightRequestDTO
     {   
         [Required]
         //[RegularExpression("^[A-Z0-9]{3}$",ErrorMessage="Acronym is invalid, please use capital letters and numbers.")]

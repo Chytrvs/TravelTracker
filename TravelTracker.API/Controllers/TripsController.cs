@@ -6,7 +6,6 @@ using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
 
-//TODO Add action to add flights to a given trip
 //TODO Make sure each flight is attached to a user
 //TODO Add action to return user trips
 //TODO Add some kind of error system to know what went wrong in a repository
@@ -24,8 +23,8 @@ namespace TravelTracker.API.Controllers
         {
             _repository = repository;
         }
-        public async Task<IActionResult> AddFlight(FlightDTO flightDTO){
-            Flight flight =await _repository.AddFlight(flightDTO);
+        public async Task<IActionResult> AddFlight(FlightRequestDTO flightRequestDTO){
+            var flight =await _repository.AddFlight(flightRequestDTO);
             if(flight!=null){
                 return Ok(flight);
             }
@@ -37,6 +36,15 @@ namespace TravelTracker.API.Controllers
                 return Ok(newairport);
             }
             return BadRequest("Airport already exists!");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetUserFlights(UsernameDTO usernameDTO){
+            var res=await _repository.GetUserFlights(usernameDTO.Username);
+            if(res!=null){
+                return Ok(res);
+            }
+            return BadRequest("Flights cannot be found.");
+            
         }
     }
 }

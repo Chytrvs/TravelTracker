@@ -17,27 +17,32 @@ namespace TravelTracker.API.Data.Repositories
             _context = Context;
             _userRepo = userRepo;
         }
-        public async Task<Flight> AddFlight(FlightDTO flightDTO)
+        public async Task<FlightResponseDTO> AddFlight(FlightRequestDTO flightRequestDTO)
         {
-            User user=await _userRepo.GetUser(flightDTO.Username);
+            User user=await _userRepo.GetUser(flightRequestDTO.Username);
             if(user==null)
                 return null;
 
-            Airport DepartureAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightDTO.DepartureAirportAcronym);
-            if(DepartureAirport==null)
+            Airport departureAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightRequestDTO.DepartureAirportAcronym);
+            if(departureAirport==null)
                 return null;
                 
-            Airport DestinationAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightDTO.DestinationAirportAcronym);
-            if(DestinationAirport==null)
+            Airport destinationAirport = await _context.Airports.FirstOrDefaultAsync(x=>x.Acronym==flightRequestDTO.DestinationAirportAcronym);
+            if(destinationAirport==null)
                 return null;
             
             Flight flight=new Flight();
-            flight.FlightDepartureAirport=DepartureAirport;
-            flight.FlightDestinationAirport=DestinationAirport;
+            flight.FlightDepartureAirport=departureAirport;
+            flight.FlightDestinationAirport=destinationAirport;
             flight.User=user;
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
-            return flight;
+            return new FlightResponseDTO
+            {
+                Username=user.Username,
+                DepartureAirport=departureAirport,
+                DestinationAirport=destinationAirport
+            };
         }
 
         public async Task<Airport> AddAirport(Airport airport)
@@ -50,9 +55,24 @@ namespace TravelTracker.API.Data.Repositories
             return airport;
         }
 
-        public Task<List<Flight>> GetUsersFlights(string username)
+        public async Task<List<FlightResponseDTO>> GetUserFlights(string username)
         {
-            throw new System.NotImplementedException();
+            if(!await _userRepo.DoesUserExist(username))
+            return null;
+            
+            var user=await _context.Users.Include(u=>u.UserFlights).FirstOrDefaultAsync(x=>x.Username==username);
+            if(!user.UserFlights.Any())
+            return null;
+            List<FlightResponseDTO> response=new List<FlightResponseDTO>();
+            foreach (var flight in user.UserFlights)
+            {
+                response.Add(new FlightResponseDTO{
+                    Username=user.Username,
+                    DepartureAirport=flight.FlightDepartureAirport,
+                    DestinationAirport=flight.FlightDestinationAirport
+                });
+            }
+            return response;
         }
     }
 }
