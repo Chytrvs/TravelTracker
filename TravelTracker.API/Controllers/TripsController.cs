@@ -9,6 +9,7 @@ using TravelTracker.API.Data.Repositories;
 //TODO Add action to add flights to a given trip
 //TODO Make sure each flight is attached to a user
 //TODO Add action to return user trips
+//TODO Add some kind of error system to know what went wrong in a repository
 
 
 namespace TravelTracker.API.Controllers
