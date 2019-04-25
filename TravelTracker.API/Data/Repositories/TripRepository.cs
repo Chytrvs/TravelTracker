@@ -60,7 +60,12 @@ namespace TravelTracker.API.Data.Repositories
             if(!await _userRepo.DoesUserExist(username))
             return null;
             
-            var user=await _context.Users.Include(u=>u.UserFlights).FirstOrDefaultAsync(x=>x.Username==username);
+            var user=await _context.Users
+            .Include(u=>u.UserFlights)
+                .ThenInclude(u=>u.FlightDepartureAirport)
+            .Include(u=>u.UserFlights)
+                .ThenInclude(u=>u.FlightDestinationAirport)
+            .FirstOrDefaultAsync(x=>x.Username==username);
             if(!user.UserFlights.Any())
             return null;
             List<FlightResponseDTO> response=new List<FlightResponseDTO>();
