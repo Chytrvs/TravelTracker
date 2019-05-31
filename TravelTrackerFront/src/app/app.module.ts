@@ -6,12 +6,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavComponent } from './nav/nav.component';
 import { AuthService } from 'src/services/auth.service';
+import { HomeComponent } from './home/home.component';
+import { RegisterComponent } from './register/register.component';
 
 
 @NgModule({
    declarations: [
       AppComponent,
-      NavComponent
+      NavComponent,
+      HomeComponent,
+      RegisterComponent,
    ],
    imports: [
       BrowserModule,
@@ -19,7 +23,9 @@ import { AuthService } from 'src/services/auth.service';
       HttpClientModule,
       FormsModule
    ],
-   providers: [AuthService],
+   providers: [
+      AuthService
+   ],
    bootstrap: [
       AppComponent
    ]
