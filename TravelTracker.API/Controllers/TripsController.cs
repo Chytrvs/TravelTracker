@@ -46,5 +46,14 @@ namespace TravelTracker.API.Controllers
             return BadRequest("Flights cannot be found.");
             
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAirports(){
+            var res=await _repository.GetAirports();
+            if(res!=null){
+                return Ok(res);
+            }
+            return BadRequest("Airports cannot be found.");
+            
+        }
     }
 }

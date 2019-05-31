@@ -79,5 +79,21 @@ namespace TravelTracker.API.Data.Repositories
             }
             return response;
         }
+
+        public async Task<List<AirportResponseDTO>> GetAirports()
+        {   
+            List<AirportResponseDTO> response=new List<AirportResponseDTO>();
+            var airports=await _context.Airports.ToListAsync();
+            foreach(var airport in airports){
+                    response.Add(new AirportResponseDTO{
+                    Name=airport.Name,
+                    Acronym=airport.Acronym
+                    
+                });
+            }
+            return response;
+
+        }
+
     }
 }

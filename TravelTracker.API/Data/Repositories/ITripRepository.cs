@@ -9,6 +9,7 @@ namespace TravelTracker.API.Data.Repositories
     {
         Task<FlightResponseDTO> AddFlight(FlightRequestDTO flightRequestDTO);
         Task<Airport> AddAirport(Airport airport);
+        Task<List<AirportResponseDTO>> GetAirports();
         Task<List<FlightResponseDTO>> GetUserFlights(string username);
     }
 }
