@@ -14,7 +14,7 @@
 
     <div *ngIf="loggedIn()" class="dropdown">
       <a class="btn btn-secondary dropdown-toggle">
-        Welcome user
+        Welcome {{authService.decodedToken.unique_name}}
       </a>
     
       <div class="dropdown-menu">

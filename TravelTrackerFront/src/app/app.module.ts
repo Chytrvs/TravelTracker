@@ -8,6 +8,7 @@ import { NavComponent } from './nav/nav.component';
 import { AuthService } from 'src/services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
+import { MapComponent } from './map/map.component';
 
 
 @NgModule({
@@ -16,6 +17,7 @@ import { RegisterComponent } from './register/register.component';
       NavComponent,
       HomeComponent,
       RegisterComponent,
+      MapComponent
    ],
    imports: [
       BrowserModule,
