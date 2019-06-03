@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/services/auth.service';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 
 @Component({
   selector: 'app-nav',

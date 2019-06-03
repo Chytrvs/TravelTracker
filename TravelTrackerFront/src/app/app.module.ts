@@ -9,6 +9,8 @@ import { AuthService } from 'src/services/auth.service';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { MapComponent } from './map/map.component';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+
 
 
 @NgModule({
@@ -23,7 +25,8 @@ import { MapComponent } from './map/map.component';
       BrowserModule,
       AppRoutingModule,
       HttpClientModule,
-      FormsModule
+      FormsModule,
+      BsDropdownModule.forRoot()
    ],
    providers: [
       AuthService
