@@ -12,6 +12,9 @@ export class NavComponent implements OnInit {
   constructor(public authService: AuthService) { }
 
   ngOnInit() {
+    const token=localStorage.getItem('token')
+    if(token)
+    this.authService.decodeToken(token);
   }
   login(){
     this.authService.login(this.model).subscribe(next=>
