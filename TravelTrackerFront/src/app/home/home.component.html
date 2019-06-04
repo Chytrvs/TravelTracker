@@ -1,9 +1,9 @@
 <div class="container mt-5">
-  <div>
+  <div *ngIf="isLoggedIn()">
     <app-map></app-map>
   </div>
-  
-    <div *ngIf="!registerMode" style="text-align: center">
+<div *ngIf="!isLoggedIn()">
+  <div *ngIf="!registerMode" style="text-align: center">
     <h1>Track your travles</h1>
     <p class="lead">To track your flights, all you need to do is sign up!</p>
     <div class="text-center">
@@ -19,6 +19,8 @@
       </div>
     </div>
   </div>
+</div>
+    
   
   
 </div>
