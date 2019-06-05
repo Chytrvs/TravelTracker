@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { error } from '@angular/compiler/src/util';
 import {NavComponent} from '../nav/nav.component'; 
-import * as arcjs from 'node_modules/arc/arc.js';
+
 
 
 
@@ -21,11 +21,7 @@ export class HomeComponent implements OnInit {
     
     //this.getAirports();
     
-    var start = { x: -122, y: 48 };
-    var end = { x: -77, y: 39 };
-    var generator = new arcjs.GreatCircle(start, end, {'name': 'Seattle to DC'});
-    var line = generator.Arc(100,{offset:10});
-    console.log(line);
+
 
   }
   registerToggle(){
