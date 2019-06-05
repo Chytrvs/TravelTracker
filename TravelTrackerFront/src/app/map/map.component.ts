@@ -13,12 +13,15 @@ import Style from 'ol/style/Style.js';
 import Stroke from 'ol/style/stroke.js';
 
 import { fromLonLat } from 'ol/proj';
+import { HttpClient } from '@angular/common/http';
+import { modelGroupProvider } from '@angular/forms/src/directives/ng_model_group';
 
 @Component({
   selector: 'app-map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.css']
 })
+
 export class MapComponent implements OnInit {
   map: OlMap;
   source: OlOSM;
@@ -29,11 +32,21 @@ export class MapComponent implements OnInit {
   vector: Vector;
   style: Style;
   stroke: Stroke;
-  constructor() { }
+
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
+    this.getFlights();
     this.DrawMap(this.GenerateCurves());
-    
+  }
+  getFlights(){
+    var flights: any;
+    this.http.get('http://localhost:5000/api/Trips/GetUserFlights').subscribe(response=>{
+      flights=response;
+      console.log(flights);
+    },error=>{
+      console.log(error);
+    })
   }
   GenerateCurves(){
     var generator = new arcjs.GreatCircle({x: 50, y: 0},{x: -10, y: 30});
