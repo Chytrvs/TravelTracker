@@ -13,8 +13,9 @@ import Style from 'ol/style/Style.js';
 import Stroke from 'ol/style/stroke.js';
 
 import { fromLonLat } from 'ol/proj';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { modelGroupProvider } from '@angular/forms/src/directives/ng_model_group';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-map',
@@ -33,22 +34,34 @@ export class MapComponent implements OnInit {
   style: Style;
   stroke: Stroke;
 
+  private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
+  flights: any;
+
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
     this.getFlights();
-    this.DrawMap(this.GenerateCurves());
+    this.DrawMap(this.GenerateCurves(this.flights));
   }
   getFlights(){
-    var flights: any;
-    this.http.get('http://localhost:5000/api/Trips/GetUserFlights').subscribe(response=>{
-      flights=response;
-      console.log(flights);
-    },error=>{
-      console.log(error);
+    this.http.post("http://localhost:5000/api/Trips/GetUserFlights",
+    {
+    "Username":  "logintest",
     })
+    .subscribe(
+    data  => {
+    console.log("POST Request is successful ", data);
+    this.flights=data;
+    },
+    error  => {
+    console.log("Error", error);
+    }
+    );
+
+
   }
-  GenerateCurves(){
+  GenerateCurves(flightsData: any){
+    
     var generator = new arcjs.GreatCircle({x: 50, y: 0},{x: -10, y: 30});
     var n = 50; // n of points
     var coords = generator.Arc(n).geometries[0].coords;

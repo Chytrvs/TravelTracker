@@ -37,7 +37,7 @@ namespace TravelTracker.API.Controllers
             }
             return BadRequest("Airport already exists!");
         }
-        [HttpGet]
+        [HttpPost]
         public async Task<IActionResult> GetUserFlights(UsernameDTO usernameDTO){
             var res=await _repository.GetUserFlights(usernameDTO.Username);
             if(res!=null){
