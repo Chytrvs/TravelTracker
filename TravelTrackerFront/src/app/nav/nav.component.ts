@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/services/auth.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -11,7 +12,7 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 export class NavComponent implements OnInit {
   model:any={};
 
-  constructor(public authService: AuthService) { }
+  constructor(public authService: AuthService,private router: Router) { }
 
   ngOnInit() {
     const token=localStorage.getItem('token')
@@ -29,7 +30,7 @@ export class NavComponent implements OnInit {
   }
   logout(){
     localStorage.removeItem('token');
-    console.log('logged out');
+    this.router.navigate(['/home']);
   }
 
 }
