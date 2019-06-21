@@ -16,6 +16,7 @@ import { fromLonLat } from 'ol/proj';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { modelGroupProvider } from '@angular/forms/src/directives/ng_model_group';
 import { map } from 'rxjs/operators';
+import { AuthService } from 'src/services/auth.service';
 
 @Component({
   selector: 'app-map',
@@ -37,21 +38,20 @@ export class MapComponent implements OnInit {
   private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
   flights: any;
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,private auth: AuthService) { }
 
   ngOnInit() {
     this.getFlights();
-    this.DrawMap(this.GenerateCurves(this.flights));
   }
   getFlights(){
     this.http.post("http://localhost:5000/api/Trips/GetUserFlights",
     {
-    "Username":  "logintest",
+    "Username":  this.auth.decodedToken.unique_name,
     })
     .subscribe(
     data  => {
-    console.log("POST Request is successful ", data);
-    this.flights=data;
+    console.log("POST Request is successful ");
+    this.DrawMap(this.GenerateCurves(data));
     },
     error  => {
     console.log("Error", error);
@@ -61,24 +61,18 @@ export class MapComponent implements OnInit {
 
   }
   GenerateCurves(flightsData: any){
-    
-    var generator = new arcjs.GreatCircle({x: 50, y: 0},{x: -10, y: 30});
-    var n = 50; // n of points
-    var coords = generator.Arc(n).geometries[0].coords;
-    var geojson = {"type":"Feature","geometry":{"type":"LineString","coordinates": coords},"properties":null };
-  
-    var sgenerator = new arcjs.GreatCircle({x: 100, y: 100},{x: -150, y: 140});
-    var sn = 50; // n of points
-    var scoords = sgenerator.Arc(sn).geometries[0].coords;
-    var sgeojson = {"type":"Feature","geometry":{"type":"LineString","coordinates": scoords},"properties":null };
-     
+    this.vector=new Vector();
     this.format=new GeoJSON({
-        featureProjection:"EPSG:3857"
-      })
-      this.vector=new Vector();
+      featureProjection:"EPSG:3857"
+    })
+    flightsData.forEach(Flight => {
+      var generator = new arcjs.GreatCircle({x: Flight.departureAirport.longitude, y: Flight.departureAirport.latitude},{x: Flight.destinationAirport.longitude, y: Flight.destinationAirport.latitude});
+      var n = 50; // n of points
+      var coords = generator.Arc(n).geometries[0].coords;
+      var geojson = {"type":"Feature","geometry":{"type":"LineString","coordinates": coords},"properties":null };
       this.vector.addFeatures(this.format.readFeatures(geojson));
-      this.vector.addFeatures(this.format.readFeatures(sgeojson));
-    return this.vector;  
+    });
+    return this.vector; 
   }
   DrawMap(vector: Vector){
     this.layer = new OlVectorLayer({
