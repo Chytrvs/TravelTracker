@@ -10,6 +10,7 @@ import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './register/register.component';
 import { MapComponent } from './map/map.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { FlightComponent } from './flight/flight.component';
 
 
 
@@ -19,7 +20,8 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
       NavComponent,
       HomeComponent,
       RegisterComponent,
-      MapComponent
+      MapComponent,
+      FlightComponent
    ],
    imports: [
       BrowserModule,
