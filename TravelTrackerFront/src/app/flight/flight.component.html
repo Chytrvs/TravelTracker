@@ -6,14 +6,18 @@
         <hr />
         <div class="form-group">
           <label for="departureAirport">Departure airport</label>
-          <select id="departureAirport" class="form-control">
-            <option *ngFor="let airport of airports" [attr.airport]="airport">{{airport.name}}</option>
+          <select id="departureAirport" class="form-control" id="departureAirport"
+          required
+          [(ngModel)]="model.departureAirport" name="departureAirport">
+            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport.acronym>{{airport.name}}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="destinationAirport">Destination airport</label>
-          <select id="destinationAirport" class="form-control">
-            <option *ngFor="let airport of airports" [attr.airport]="airport">{{airport.name}}</option>
+          <select id="destinationAirport" class="form-control" id="destinationAirport"
+          required
+          [(ngModel)]="model.destinationAirport" name="destinationAirport">
+            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport.acronym>{{airport.name}}</option>
           </select>
         </div>
         <div class="form-group text-center">
