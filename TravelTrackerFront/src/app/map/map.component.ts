@@ -13,6 +13,7 @@ import Style from 'ol/style/Style.js';
 import Stroke from 'ol/style/stroke.js';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { AuthService } from 'src/services/auth.service';
+import { AlertifyService } from 'src/services/alertify.service';
 
 @Component({
   selector: 'app-map',
@@ -34,7 +35,7 @@ export class MapComponent implements OnInit {
   private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
   flights: any;
 
-  constructor(private http: HttpClient,private auth: AuthService) { }
+  constructor(private http: HttpClient,private auth: AuthService,private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.getFlights();
@@ -46,11 +47,12 @@ export class MapComponent implements OnInit {
     })
     .subscribe(
     data  => {
-    console.log("POST Request is successful ");
+      this.alertify.success("Successfully loaded your flights");
     this.DrawMap(this.GenerateCurves(data));
     },
     error  => {
-    console.log("Error", error);
+    this.alertify.message("In order to see your flights displayed on a map, add some of them in a first place");
+    this.DrawMap(new Vector());
     }
     );
 
