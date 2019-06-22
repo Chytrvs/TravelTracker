@@ -18,11 +18,7 @@ export class HomeComponent implements OnInit {
   constructor(private http: HttpClient, private comp: NavComponent) { }
 
   ngOnInit() {
-    
-    //this.getAirports();
-    
-
-
+    this.getAirports();
   }
   registerToggle(){
     this.registerMode=!this.registerMode;

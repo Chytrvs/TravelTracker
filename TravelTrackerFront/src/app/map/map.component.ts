@@ -11,11 +11,7 @@ import GeoJSON from 'ol/format/GeoJSON.js';
 import Vector from 'ol/source/Vector.js';
 import Style from 'ol/style/Style.js';
 import Stroke from 'ol/style/stroke.js';
-
-import { fromLonLat } from 'ol/proj';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { modelGroupProvider } from '@angular/forms/src/directives/ng_model_group';
-import { map } from 'rxjs/operators';
 import { AuthService } from 'src/services/auth.service';
 
 @Component({

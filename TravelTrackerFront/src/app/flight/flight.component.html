@@ -1,3 +1,25 @@
-<p>
-  flight works!
-</p>
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-4">
+      <form #flightForm="ngForm" (ngSubmit)="addFlight()">
+        <h2 class="text-center text-primary">Add new flight</h2>
+        <hr />
+        <div class="form-group">
+          <label for="departureAirport">Departure airport</label>
+          <select id="departureAirport" class="form-control">
+            <option *ngFor="let airport of airports" [attr.airport]="airport">{{airport.name}}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="destinationAirport">Destination airport</label>
+          <select id="destinationAirport" class="form-control">
+            <option *ngFor="let airport of airports" [attr.airport]="airport">{{airport.name}}</option>
+          </select>
+        </div>
+        <div class="form-group text-center">
+          <button class="btn btn-success" type="submit">Add flight</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-flight',
@@ -6,10 +7,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./flight.component.css']
 })
 export class FlightComponent implements OnInit {
-
-  constructor() { }
+  airports:any;
+  constructor(private http: HttpClient) { }
 
   ngOnInit() {
+    this.getAirports();
+  }
+  getAirports(){
+    this.http.get('http://localhost:5000/api/Trips/GetAirports').subscribe(response=>{
+      this.airports=response;
+    },error=>{
+      console.log(error);
+    })
+  }
+  addFlight(){
+
   }
 
 }
