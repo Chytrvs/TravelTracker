@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from 'src/services/auth.service';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { Router } from '@angular/router';
+import { AlertifyService } from 'src/services/alertify.service';
 
 
 @Component({
@@ -12,7 +13,7 @@ import { Router } from '@angular/router';
 export class NavComponent implements OnInit {
   model:any={};
 
-  constructor(public authService: AuthService,private router: Router) { }
+  constructor(public authService: AuthService,private router: Router,private alertify:AlertifyService) { }
 
   ngOnInit() {
     const token=localStorage.getItem('token')
@@ -21,8 +22,8 @@ export class NavComponent implements OnInit {
   }
   login(){
     this.authService.login(this.model).subscribe(next=>
-      console.log("Logged successfuly"),error=>
-      console.log("Failed to login"))
+      this.alertify.success("Logged in succesfully"),error=>
+      this.alertify.error("Failed to login"))
   }
 
   loggedIn(){

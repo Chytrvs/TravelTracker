@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from 'src/services/auth.service';
+import { AlertifyService } from 'src/services/alertify.service';
 
 @Component({
   selector: "app-flight",
@@ -10,7 +11,7 @@ import { AuthService } from 'src/services/auth.service';
 export class FlightComponent implements OnInit {
   airports: any;
   model: any={};
-  constructor(private http: HttpClient,private auth: AuthService) {}
+  constructor(private http: HttpClient,private auth: AuthService,private alertify:AlertifyService) {}
 
   ngOnInit() {
     this.getAirports();
@@ -34,10 +35,10 @@ export class FlightComponent implements OnInit {
       })
       .subscribe(
         data => {
-          console.log(data);
+          this.alertify.success("Successfully added new flight")
         },
         error => {
-          console.log("Error", error);
+          this.alertify.error("Failed to add new flight")
         }
       );
   }

@@ -12,6 +12,7 @@ import { MapComponent } from './map/map.component';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { FlightComponent } from './flight/flight.component';
 import { AuthGuard } from './_guards/auth.guard';
+import { AlertifyService } from 'src/services/alertify.service';
 
 
 
@@ -33,7 +34,8 @@ import { AuthGuard } from './_guards/auth.guard';
    ],
    providers: [
       AuthService,
-      AuthGuard
+      AuthGuard,
+      AlertifyService
    ],
    bootstrap: [
       AppComponent
