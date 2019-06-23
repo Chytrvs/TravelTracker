@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
 import * as arcjs from 'node_modules/arc/arc.js';
+import * as Collections from 'typescript-collections';
 
 import OlMap from 'ol/Map';
 import OlOSM from 'ol/source/OSM.js';
@@ -34,11 +35,15 @@ export class MapComponent implements OnInit {
 
   private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
   flights: any;
+  NumberOfFlights: number;
+  NumberOfAirportsVisited:number;
 
   constructor(private http: HttpClient,private auth: AuthService,private alertify: AlertifyService) { }
 
   ngOnInit() {
+    this.NumberOfFlights=0;
     this.getFlights();
+    
   }
   getFlights(){
     this.http.post("http://localhost:5000/api/Trips/GetUserFlights",
@@ -59,17 +64,23 @@ export class MapComponent implements OnInit {
 
   }
   GenerateCurves(flightsData: any){
+    var AirportsVisited=new Collections.Set(String);
     this.vector=new Vector();
     this.format=new GeoJSON({
       featureProjection:"EPSG:3857"
     })
     flightsData.forEach(Flight => {
+      
+      AirportsVisited.add(Flight.departureAirport.acronym);
+      AirportsVisited.add(Flight.destinationAirport.acronym);
+      this.NumberOfFlights++;
       var generator = new arcjs.GreatCircle({x: Flight.departureAirport.longitude, y: Flight.departureAirport.latitude},{x: Flight.destinationAirport.longitude, y: Flight.destinationAirport.latitude});
       var n = 50; // n of points
       var coords = generator.Arc(n).geometries[0].coords;
       var geojson = {"type":"Feature","geometry":{"type":"LineString","coordinates": coords},"properties":null };
       this.vector.addFeatures(this.format.readFeatures(geojson));
     });
+    this.NumberOfAirportsVisited=AirportsVisited.size();
     return this.vector; 
   }
   DrawMap(vector: Vector){
@@ -92,7 +103,9 @@ export class MapComponent implements OnInit {
       target: 'map',
       view: new OlView({
         center: [0,0],
-        zoom: 2
+        zoom: 2.5,
+        minZoom:2,
+        maxZoom:19
       })
     });
   }
