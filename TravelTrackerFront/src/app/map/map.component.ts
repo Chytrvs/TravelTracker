@@ -36,14 +36,12 @@ export class MapComponent implements OnInit {
   style: Style;
   stroke: Stroke;
 
- 
-
-
   private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
   flights: any;
   NumberOfFlights: number;
   NumberOfAirportsVisited:number;
-  DistanceTraveled:number;
+  DistanceTraveled:any;
+  
 
   constructor(private http: HttpClient,private auth: AuthService,private alertify: AlertifyService) { }
 
@@ -73,15 +71,13 @@ export class MapComponent implements OnInit {
 
   }
   GenerateCurves(flightsData: any){
-    var distance=sphere.getDistance([0,0],[180,0]);
-    console.log(distance);
+    
     var AirportsVisited=new Collections.Set(String);
     this.vector=new Vector();
     this.format=new GeoJSON({
       featureProjection:"EPSG:3857"
     })
     flightsData.forEach(Flight => {
-
       AirportsVisited.add(Flight.departureAirport.acronym);
       AirportsVisited.add(Flight.destinationAirport.acronym);
       this.NumberOfFlights++;
@@ -93,7 +89,17 @@ export class MapComponent implements OnInit {
       this.vector.addFeatures(this.format.readFeatures(geojson));
     });
     this.NumberOfAirportsVisited=AirportsVisited.size();
+    this.FormatDistance();
     return this.vector; 
+  }
+  FormatDistance(){
+    if (this.DistanceTraveled >= 1000) {
+        this.DistanceTraveled = (Math.round(this.DistanceTraveled / 1000 * 100) / 100) +
+        ' ' + 'km';
+    } else {
+      this.DistanceTraveled = Math.round(this.DistanceTraveled) +
+        ' ' + 'm';
+    }
   }
   DrawMap(vector: Vector){
     this.layer = new OlVectorLayer({
