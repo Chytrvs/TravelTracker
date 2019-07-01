@@ -19,6 +19,19 @@ namespace TravelTracker.API.Controllers
         {
             _repository = repository;
         }
+        /// <summary>
+        /// Adds flight provided in FlightRequestDto
+        /// 
+        /// Sample request:
+        ///     POST
+        ///     {
+        ///       "Username":"login",
+        ///       "DepartureAirportAcronym": "KABQ",
+        ///       "DestinationAirportAcronym": "KALB",
+        ///     }
+        /// </summary>
+        
+        [HttpPost]
         public async Task<IActionResult> AddFlight(FlightRequestDTO flightRequestDTO)
         {
             var flight = await _repository.AddFlight(flightRequestDTO);
@@ -28,6 +41,19 @@ namespace TravelTracker.API.Controllers
             }
             return BadRequest("One of the airports doesnt exist!");
         }
+        /// <summary>
+        /// Adds new airport
+        /// 
+        /// Sample request:
+        ///     POST
+        ///     {
+        ///       "Name": "Philip S W Goldson International Airport",
+        ///       "Acronym": "MZBZ",
+        ///       "Latitude": "17.5386",
+        ///       "Longitude": "-88.3042"
+        ///     }
+        /// </summary>
+        [HttpPost]
         public async Task<IActionResult> AddAirport(Airport airport)
         {
             Airport newairport = await _repository.AddAirport(airport);
@@ -37,6 +63,13 @@ namespace TravelTracker.API.Controllers
             }
             return BadRequest("Airport already exists!");
         }
+        /// <summary>
+        /// Provides flights attached to specified user
+        /// 
+        /// Sample request:
+        ///     GET
+        ///     http://localhost:5000/api/Trips/GetUserFlights/login
+        /// </summary>
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserFlights(string username)
         {
@@ -48,6 +81,13 @@ namespace TravelTracker.API.Controllers
             return BadRequest("Flights cannot be found.");
 
         }
+        /// <summary>
+        /// Provides all airports in database
+        /// 
+        /// Sample request:
+        ///     GET
+        ///     http://localhost:5000/api/Trips/GetAirports
+        /// </summary>
         [HttpGet]
         public async Task<IActionResult> GetAirports()
         {
