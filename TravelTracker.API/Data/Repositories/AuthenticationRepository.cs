@@ -5,11 +5,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace TravelTracker.API.Data.Repositories
 {
+    /// <summary>
+    /// Implements db queries that allow users to authenticate.
+    /// </summary>
     public class AuthenticationRepository : IAuthenticationRepository
     {
         private readonly TravelTrackerDbContext _context;
         private readonly IUserRepository _userRepo;
 
+
+        public AuthenticationRepository(TravelTrackerDbContext context, IUserRepository userRepo)
+        {
+            _context = context;
+            _userRepo = userRepo;
+        }
+        /// <summary>
+        /// Struct containing PasswordHash and PasswortSalt byte arrays, used to pass data between HashPassword and RegisterUser methods.
+        /// </summary>
         private struct HashedPasswordBundle
         {
 
@@ -21,60 +33,74 @@ namespace TravelTracker.API.Data.Repositories
                 PasswordSalt = passwordSalt;
             }
         }
-        public AuthenticationRepository(TravelTrackerDbContext context,IUserRepository userRepo)
-        {
-            _context = context;
-            _userRepo = userRepo;
-        }
+        /// <summary>
+        /// Executes database query that verifies if provided user exists, then it uses VerifyUser method to check if provided password and login are matching.
+        /// If both conditions are met, it returns users data, otherwise returns null
+        /// </summary>
         public async Task<User> LoginUser(string username, string password)
         {
-            User user = await _context.Users.FirstOrDefaultAsync(x=>x.Username==username);
-            if(user==null){
+            User user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
+            if (user == null)
+            {
                 return null;
             }
-            if(!VerifyUser(username,password,user)){
+            if (!VerifyUser(password, user))
+            {
                 return null;
             }
             return user;
         }
-
-        private bool VerifyUser(string username, string password, User user)
+        /// <summary>
+        /// Decodes hashed password from provided user object, then it compares that password with the one provided in a login query
+        /// If passwords match, returns true, otherwise returns false
+        /// </summary>
+        private bool VerifyUser(string password, User user)
         {
             var hmac = new System.Security.Cryptography.HMACSHA512(user.PasswordSalt);
             using (hmac)
             {
-                    return ByteArrayCompare(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)),user.PasswordHash);
+                return ByteArrayCompare(hmac.ComputeHash(Encoding.UTF8.GetBytes(password)), user.PasswordHash);
             }
         }
+        /// <summary>
+        /// Compares two byte arrays, if they match, it returns true, otherwise returns false
+        /// </summary>
         private bool ByteArrayCompare(byte[] a1, byte[] a2)
         {
+
             if (a1.Length != a2.Length)
                 return false;
 
-            for (int i=0; i<a1.Length; i++)
-                if (a1[i]!=a2[i])
+            for (int i = 0; i < a1.Length; i++)
+                if (a1[i] != a2[i])
                     return false;
 
             return true;
         }
-
-        public async Task<User> RegisterUser(string username, string password,string email)
+        /// <summary>
+        /// Checks if user already exists in database. If user doesnt exist, password is hashed and user is added to database
+        /// </summary>
+        public async Task<User> RegisterUser(string username, string password, string email)
         {
             if (await _userRepo.DoesUserExist(username))
             {
                 return null;
             }
-            User user = new User();
             HashedPasswordBundle hashedBundle = HashPassword(password);
-            user.PasswordHash = hashedBundle.PasswordHash;
-            user.PasswordSalt = hashedBundle.PasswordSalt;
-            user.Username = username;
-            user.Email=email;
+            User user = new User
+            {
+                PasswordHash = hashedBundle.PasswordHash,
+                PasswordSalt = hashedBundle.PasswordSalt,
+                Username = username,
+                Email = email
+            };
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
         }
-
+        /// <summary>
+        /// Hashes password using SHA512 algorithm, returns HashedPasswordBundle containing hashed password and its salt
+        /// </summary>
         private HashedPasswordBundle HashPassword(string password)
         {
             var hmac = new System.Security.Cryptography.HMACSHA512();
