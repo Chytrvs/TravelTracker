@@ -36,4 +36,8 @@ loggedIn(){
 decodeToken(token: any){
   this.decodedToken=helper.decodeToken(token);
 }
+getToken(){
+  const token = localStorage.getItem('token');
+  return token;
+}
 }

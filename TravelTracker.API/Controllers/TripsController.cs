@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TravelTracker.API.Data;
 using TravelTracker.API.Data.DataModels;
@@ -11,6 +12,7 @@ namespace TravelTracker.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class TripsController : ControllerBase
     {
         private readonly ITripRepository _repository;
@@ -32,6 +34,7 @@ namespace TravelTracker.API.Controllers
         /// </summary>
         
         [HttpPost]
+        
         public async Task<IActionResult> AddFlight(FlightRequestDTO flightRequestDTO)
         {
             var flight = await _repository.AddFlight(flightRequestDTO);
