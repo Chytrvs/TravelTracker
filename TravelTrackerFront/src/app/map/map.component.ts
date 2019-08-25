@@ -126,7 +126,7 @@ export class MapComponent implements OnInit {
       style: new Style({
         stroke: new Stroke({
           color: "red",
-          width: 3
+          width: 2
         })
       })
     });
