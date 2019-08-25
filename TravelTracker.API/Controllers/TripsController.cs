@@ -92,6 +92,7 @@ namespace TravelTracker.API.Controllers
         ///     http://localhost:5000/api/Trips/GetAirports
         /// </summary>
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAirports()
         {
             var res = await _repository.GetAirports();
