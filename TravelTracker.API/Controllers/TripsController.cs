@@ -6,6 +6,7 @@ using TravelTracker.API.Data;
 using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
+using Newtonsoft.Json;
 
 
 namespace TravelTracker.API.Controllers
@@ -40,7 +41,9 @@ namespace TravelTracker.API.Controllers
             var flight = await _repository.AddFlight(flightRequestDTO);
             if (flight != null)
             {
-                return Ok(flight);
+                return new JsonResult(flight,new JsonSerializerSettings(){
+                    Formatting=Formatting.Indented
+                });
             }
             return BadRequest("One of the airports doesnt exist!");
         }
@@ -62,7 +65,9 @@ namespace TravelTracker.API.Controllers
             Airport newairport = await _repository.AddAirport(airport);
             if (newairport != null)
             {
-                return Ok(newairport);
+                return new JsonResult(newairport,new JsonSerializerSettings(){
+                    Formatting=Formatting.Indented
+                });
             }
             return BadRequest("Airport already exists!");
         }
@@ -79,7 +84,9 @@ namespace TravelTracker.API.Controllers
             var res = await _repository.GetUserFlights(username);
             if (res != null)
             {
-                return Ok(res);
+                return new JsonResult(res,new JsonSerializerSettings(){
+                    Formatting=Formatting.Indented
+                });
             }
             return BadRequest("Flights cannot be found.");
 
@@ -98,7 +105,9 @@ namespace TravelTracker.API.Controllers
             var res = await _repository.GetAirports();
             if (res != null)
             {
-                return Ok(res);
+                return new JsonResult(res,new JsonSerializerSettings(){
+                    Formatting=Formatting.Indented
+                });
             }
             return BadRequest("Airports cannot be found.");
 
