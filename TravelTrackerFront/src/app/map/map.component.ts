@@ -17,6 +17,7 @@ import Stroke from "ol/style/stroke.js";
 import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "src/services/auth.service";
 import { AlertifyService } from "src/services/alertify.service";
+import { Flight } from '../interfaces/flight';
 
 @Component({
   selector: "app-map",
@@ -37,7 +38,6 @@ export class MapComponent implements OnInit {
   private options = {
     headers: new HttpHeaders().set("Content-Type", "application/json")
   };
-  flights: any;
   NumberOfFlights: number;
   NumberOfAirportsVisited: number;
   DistanceTraveled: any;
@@ -55,7 +55,7 @@ export class MapComponent implements OnInit {
     this.getFlights();
   }
   getFlights() {
-    this.http.get("http://localhost:5000/api/Trips/GetUserFlights/"+this.auth.decodedToken.unique_name)
+    this.http.get<Flight[]>("http://localhost:5000/api/Trips/GetUserFlights/"+this.auth.decodedToken.unique_name)
     .subscribe(
       data => {
         this.alertify.success("Successfully loaded your flights");
@@ -70,33 +70,33 @@ export class MapComponent implements OnInit {
     );
   }
 
-  GenerateCurves(flightsData: any) {
+  GenerateCurves(flightsData: Flight[]) {
     var AirportsVisited = new Collections.Set(String);
     this.vector = new Vector();
     this.format = new GeoJSON({
       featureProjection: "EPSG:3857"
     });
     flightsData.forEach(Flight => {
-      AirportsVisited.add(Flight.departureAirport.acronym);
-      AirportsVisited.add(Flight.destinationAirport.acronym);
+      AirportsVisited.add(Flight.DepartureAirport.Acronym);
+      AirportsVisited.add(Flight.DestinationAirport.Acronym);
       this.NumberOfFlights++;
       this.DistanceTraveled += sphere.getDistance(
         [
-          Flight.departureAirport.longitude,
-          Flight.departureAirport.latitude],
+          Flight.DepartureAirport.Longitude,
+          Flight.DepartureAirport.Latitude],
         [
-          Flight.destinationAirport.longitude,
-          Flight.destinationAirport.latitude
+          Flight.DestinationAirport.Longitude,
+          Flight.DestinationAirport.Latitude
         ]
       );
       var generator = new arcjs.GreatCircle(
         {
-          x: Flight.departureAirport.longitude,
-          y: Flight.departureAirport.latitude
+          x: Flight.DepartureAirport.Longitude,
+          y: Flight.DepartureAirport.Latitude
         },
         {
-          x: Flight.destinationAirport.longitude,
-          y: Flight.destinationAirport.latitude
+          x: Flight.DestinationAirport.Longitude,
+          y: Flight.DestinationAirport.Latitude
         }
       );
       var n = 50; // n of points
