@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { AuthService } from 'src/services/auth.service';
 import { AlertifyService } from 'src/services/alertify.service';
+import { Airport } from '../interfaces/airport';
 
 @Component({
   selector: "app-flight",
@@ -9,7 +10,7 @@ import { AlertifyService } from 'src/services/alertify.service';
   styleUrls: ["./flight.component.css"]
 })
 export class FlightComponent implements OnInit {
-  airports: any;
+  airports: Airport[];
   model: any={};
   constructor(private http: HttpClient,private auth: AuthService,private alertify:AlertifyService) {}
 
@@ -17,7 +18,7 @@ export class FlightComponent implements OnInit {
     this.getAirports();
   }
   getAirports() {
-    this.http.get("http://localhost:5000/api/Trips/GetAirports").subscribe(
+    this.http.get<Airport[]>("http://localhost:5000/api/Trips/GetAirports").subscribe(
       response => {
         this.airports = response;
       },
