@@ -1,6 +1,6 @@
 export interface Airport {
     Name: string;
     Acronym: string;
-    Latatide:number;
+    Latitude:number;
     Longitude:number;
 }
