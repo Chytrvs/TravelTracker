@@ -3,6 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { AuthService } from 'src/services/auth.service';
 import { AlertifyService } from 'src/services/alertify.service';
 import { Airport } from '../interfaces/airport';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: "app-flight",
@@ -18,7 +19,7 @@ export class FlightComponent implements OnInit {
     this.getAirports();
   }
   getAirports() {
-    this.http.get<Airport[]>("http://localhost:5000/api/Trips/GetAirports").subscribe(
+    this.http.get<Airport[]>(`${environment.baseURL}/api/Trips/GetAirports`).subscribe(
       response => {
         this.airports = response;
       },
@@ -29,7 +30,7 @@ export class FlightComponent implements OnInit {
   }
   addFlight() {
     this.http
-      .post("http://localhost:5000/api/Trips/AddFlight", {
+      .post(`${environment.baseURL}/api/Trips/AddFlight`, {
         Username: this.auth.decodedToken.unique_name,
         DepartureAirportAcronym: this.model.departureAirport,
         DestinationAirportAcronym: this.model.destinationAirport

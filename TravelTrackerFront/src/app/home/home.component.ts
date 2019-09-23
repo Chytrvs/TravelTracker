@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { error } from '@angular/compiler/src/util';
 import {NavComponent} from '../nav/nav.component'; 
 import { Airport } from '../interfaces/airport';
+import { environment } from 'src/environments/environment';
 
 
 
@@ -25,9 +26,8 @@ export class HomeComponent implements OnInit {
     this.registerMode=!this.registerMode;
   }
   getAirports(){
-    this.http.get<Airport[]>('http://localhost:5000/api/Trips/GetAirports').subscribe(response=>{
+    this.http.get<Airport[]>(`${environment.baseURL}/api/Trips/GetAirports`).subscribe(response=>{
       this.airports=response;
-      console.log(this.airports[0].Name);
     },error=>{
       console.log(error);
     })

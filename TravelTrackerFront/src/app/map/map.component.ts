@@ -18,6 +18,7 @@ import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
 import { AuthService } from "src/services/auth.service";
 import { AlertifyService } from "src/services/alertify.service";
 import { Flight } from '../interfaces/flight';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: "app-map",
@@ -55,7 +56,7 @@ export class MapComponent implements OnInit {
     this.getFlights();
   }
   getFlights() {
-    this.http.get<Flight[]>("http://localhost:5000/api/Trips/GetUserFlights/"+this.auth.decodedToken.unique_name)
+    this.http.get<Flight[]>(`${environment.baseURL}/api/Trips/GetUserFlights/`+this.auth.decodedToken.unique_name)
     .subscribe(
       data => {
         this.alertify.success("Successfully loaded your flights");

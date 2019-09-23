@@ -3,6 +3,7 @@ import { HttpClient,HttpHeaders } from '@angular/common/http';
 import {map} from 'rxjs/operators'
 import { JwtHelperService } from '@auth0/angular-jwt'
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 const helper = new JwtHelperService();
 
@@ -10,7 +11,7 @@ const helper = new JwtHelperService();
   providedIn: 'root'
 })
 export class AuthService {
-  baseUrl='http://localhost:5000/api/Authentication/';
+  baseUrl=`${environment.baseURL}/api/Authentication/`;
   private options = { headers: new HttpHeaders().set('Content-Type', 'application/json') };
   decodedToken: any;
   
