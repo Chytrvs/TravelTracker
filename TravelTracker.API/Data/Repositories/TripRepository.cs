@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
+using System;
 
 namespace TravelTracker.API.Data.Repositories
 {
@@ -43,7 +44,8 @@ namespace TravelTracker.API.Data.Repositories
             {
                 FlightDepartureAirport = departureAirport,
                 FlightDestinationAirport = destinationAirport,
-                User = user
+                User = user,
+                CreatedDate=DateTime.Now
             };
             //Adds new flight to the database
             await _context.Flights.AddAsync(flight);

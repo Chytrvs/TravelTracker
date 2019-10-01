@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System;
 
 namespace TravelTracker.API.Data.DataModels
 {
@@ -14,5 +15,6 @@ namespace TravelTracker.API.Data.DataModels
 
          public int UserId { get; set; }
          public User User { get; set; }
+         public DateTime CreatedDate { get; set; }
     }
 }
