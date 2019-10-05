@@ -27,7 +27,7 @@ export class RegisterComponent implements OnInit {
             password:this.model.password
           })
         },
-        error => this.alertify.error(error)
+        err => this.alertify.error(err.error.title)
       );
   }
   cancel() {
