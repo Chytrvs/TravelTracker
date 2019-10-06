@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { AuthService } from "src/services/auth.service";
 import { AlertifyService } from "src/services/alertify.service";
-import { FormGroup, FormControl } from "@angular/forms";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { User } from "../interfaces/user";
 
 @Component({
@@ -26,28 +26,41 @@ export class RegisterComponent implements OnInit {
 
   generateForm() {
     this.registerForm = new FormGroup({
-      username: new FormControl(),
-      email: new FormControl(),
-      password: new FormControl()
+      username: new FormControl("", [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(10)
+      ]),
+      email: new FormControl("", [
+         Validators.required,
+         Validators.email
+      ]),
+      password: new FormControl("", [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(64)
+      ])
     });
   }
 
   register() {
-    this.user = Object.assign({}, this.registerForm.value);
-    this.authService.register(this.user).subscribe(
-      result => {
-        this.alertify.success("Registered successfuly");
-      },
-      err => {
-        this.alertify.error(err.error.title);
-      },
-      () => {
-        this.authService.login({
-          username: this.user.Username,
-          password: this.user.Password
-        });
-      }
-    );
+    if (this.registerForm.valid) {
+      this.user = Object.assign({}, this.registerForm.value);
+      this.authService.register(this.user).subscribe(
+        result => {
+          this.alertify.success("Registered successfuly");
+        },
+        err => {
+          this.alertify.error(err.error.title);
+        },
+        () => {
+          this.authService.login({
+            username: this.user.Username,
+            password: this.user.Password
+          });
+        }
+      );
+    }
   }
   cancel() {
     this.cancelRegister.emit();
