@@ -1,6 +1,8 @@
 import { Component, OnInit, Input, Output, EventEmitter } from "@angular/core";
 import { AuthService } from "src/services/auth.service";
-import { AlertifyService } from 'src/services/alertify.service';
+import { AlertifyService } from "src/services/alertify.service";
+import { FormGroup, FormControl } from "@angular/forms";
+import { User } from "../interfaces/user";
 
 @Component({
   selector: "app-register",
@@ -10,25 +12,42 @@ import { AlertifyService } from 'src/services/alertify.service';
 export class RegisterComponent implements OnInit {
   @Input() airportsFromHome: any;
   @Output() cancelRegister = new EventEmitter();
-  model: any = {};
+  registerForm: FormGroup;
+  user: User;
 
-  constructor(private authService: AuthService,private alertify:AlertifyService) {}
+  constructor(
+    private authService: AuthService,
+    private alertify: AlertifyService
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.generateForm();
+  }
+
+  generateForm() {
+    this.registerForm = new FormGroup({
+      username: new FormControl(),
+      email: new FormControl(),
+      password: new FormControl()
+    });
+  }
 
   register() {
-    this.authService
-      .register(this.model)
-      .subscribe(
-        result => {
-          this.alertify.success("Registered successfuly")
-          this.authService.login({
-            username:this.model.username,
-            password:this.model.password
-          })
-        },
-        err => this.alertify.error(err.error.title)
-      );
+    this.user = Object.assign({}, this.registerForm.value);
+    this.authService.register(this.user).subscribe(
+      result => {
+        this.alertify.success("Registered successfuly");
+      },
+      err => {
+        this.alertify.error(err.error.title);
+      },
+      () => {
+        this.authService.login({
+          username: this.user.Username,
+          password: this.user.Password
+        });
+      }
+    );
   }
   cancel() {
     this.cancelRegister.emit();
