@@ -39,14 +39,16 @@ export class RegisterComponent implements OnInit {
         Validators.required,
         Validators.minLength(6),
         Validators.maxLength(64)
+      ]),
+      favouriteAirport: new FormControl("", [
+        Validators.required
       ])
     });
   }
-
   register() {
-    if (this.registerForm.valid) {
+   if (this.registerForm.valid) {
       this.user = Object.assign({}, this.registerForm.value);
-      this.authService.register(this.user).subscribe(
+        this.authService.register(this.user).subscribe(
         result => {
           this.alertify.success("Registered successfuly");
         },
@@ -61,9 +63,11 @@ export class RegisterComponent implements OnInit {
         }
       );
     }
+    else{
+      this.alertify.error("Please specify your username and password")
+    }
   }
   cancel() {
     this.cancelRegister.emit();
-    console.log("cancelled");
   }
 }

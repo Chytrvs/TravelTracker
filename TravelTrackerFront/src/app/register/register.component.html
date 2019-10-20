@@ -19,10 +19,10 @@
   </div>
   <div class="form-group">
     <label for="favoriteAirport">What is your favourite airport?</label>
-    <select id="favouriteAirport" class="form-control">
+    <select id="favouriteAirport" class="form-control" formControlName="favouriteAirport">
       <option
         *ngFor="let airport of airportsFromHome"
-        [attr.airport]="airport"
+        [attr.airport]="airport" [ngValue]="airport"
         >{{ airport.Name }}</option
       >
     </select>
