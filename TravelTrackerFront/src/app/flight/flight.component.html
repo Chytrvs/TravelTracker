@@ -1,23 +1,19 @@
 <div class="container mt-5">
   <div class="row justify-content-center">
     <div class="col-4">
-      <form #flightForm="ngForm" (ngSubmit)="addFlight()">
+      <form [formGroup]=flightForm (ngSubmit)="addFlight()">
         <h2 class="text-center text-primary">Add new flight</h2>
         <hr />
         <div class="form-group">
           <label for="departureAirport">Departure airport</label>
-          <select id="departureAirport" class="form-control" id="departureAirport"
-          required
-          [(ngModel)]="model.departureAirport" name="departureAirport">
-            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport.Acronym>{{airport.Name}}</option>
+          <select id="departureAirport" class="form-control" formControlName="departureAirport">
+            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport>{{airport.Name}}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="destinationAirport">Destination airport</label>
-          <select id="destinationAirport" class="form-control" id="destinationAirport"
-          required
-          [(ngModel)]="model.destinationAirport" name="destinationAirport">
-            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport.Acronym>{{airport.Name}}</option>
+          <select id="destinationAirport" class="form-control" formControlName="destinationAirport">
+            <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport>{{airport.Name}}</option>
           </select>
         </div>
         <div class="form-group text-center">

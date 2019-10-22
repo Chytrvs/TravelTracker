@@ -4,6 +4,7 @@ import { AuthService } from 'src/services/auth.service';
 import { AlertifyService } from 'src/services/alertify.service';
 import { Airport } from '../interfaces/airport';
 import { environment } from 'src/environments/environment';
+import { FormGroup, FormControl } from '@angular/forms';
 
 @Component({
   selector: "app-flight",
@@ -12,7 +13,11 @@ import { environment } from 'src/environments/environment';
 })
 export class FlightComponent implements OnInit {
   airports: Airport[];
-  model: any={};
+  flightForm = new FormGroup({
+    departureAirport: new FormControl(''),
+    destinationAirport: new FormControl(''),
+  });
+
   constructor(private http: HttpClient,private auth: AuthService,private alertify:AlertifyService) {}
 
   ngOnInit() {
@@ -29,11 +34,12 @@ export class FlightComponent implements OnInit {
     );
   }
   addFlight() {
+   
     this.http
       .post(`${environment.baseURL}/api/Trips/AddFlight`, {
         Username: this.auth.decodedToken.unique_name,
-        DepartureAirportAcronym: this.model.departureAirport,
-        DestinationAirportAcronym: this.model.destinationAirport
+        DepartureAirportAcronym: this.flightForm.get('departureAirport').value.Acronym,
+        DestinationAirportAcronym: this.flightForm.get('destinationAirport').value.Acronym
       })
       .subscribe(
         data => {
@@ -43,5 +49,5 @@ export class FlightComponent implements OnInit {
           this.alertify.error("Failed to add new flight")
         }
       );
-  }
+      }
 }
