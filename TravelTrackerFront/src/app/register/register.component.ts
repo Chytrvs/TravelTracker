@@ -64,7 +64,7 @@ export class RegisterComponent implements OnInit {
       );
     }
     else{
-      this.alertify.error("Please specify your username and password")
+      this.alertify.error("Registration failed")
     }
   }
   cancel() {
