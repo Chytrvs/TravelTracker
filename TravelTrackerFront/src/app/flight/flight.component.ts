@@ -16,7 +16,11 @@ export class FlightComponent implements OnInit {
   flightForm = new FormGroup({
     departureAirport: new FormControl(''),
     destinationAirport: new FormControl(''),
-  });
+  },this.flightUniqueAirportsValidator);
+
+  flightUniqueAirportsValidator(group: FormGroup){
+    return group.get('departureAirport').value!=group.get('destinationAirport').value ? null : {"notUnique":true}
+  }
 
   constructor(private http: HttpClient,private auth: AuthService,private alertify:AlertifyService) {}
 
@@ -34,8 +38,8 @@ export class FlightComponent implements OnInit {
     );
   }
   addFlight() {
-   
-    this.http
+   if(this.flightForm.valid){
+     this.http
       .post(`${environment.baseURL}/api/Trips/AddFlight`, {
         Username: this.auth.decodedToken.unique_name,
         DepartureAirportAcronym: this.flightForm.get('departureAirport').value.Acronym,
@@ -49,5 +53,10 @@ export class FlightComponent implements OnInit {
           this.alertify.error("Failed to add new flight")
         }
       );
+   }
+   else{
+    this.alertify.error("Failed to add new flight")
+   }
+    
       }
 }

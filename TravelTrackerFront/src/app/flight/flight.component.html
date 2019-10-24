@@ -6,18 +6,23 @@
         <hr />
         <div class="form-group">
           <label for="departureAirport">Departure airport</label>
-          <select id="departureAirport" class="form-control" formControlName="departureAirport">
+          <select [ngClass]="{'is-invalid': flightForm.invalid && flightForm.touched}"
+           id="departureAirport" class="form-control" formControlName="departureAirport">
             <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport>{{airport.Name}}</option>
           </select>
         </div>
         <div class="form-group">
           <label for="destinationAirport">Destination airport</label>
-          <select id="destinationAirport" class="form-control" formControlName="destinationAirport">
+          <select [ngClass]="{'is-invalid': flightForm.invalid && flightForm.touched}"
+           id="destinationAirport" class="form-control" formControlName="destinationAirport">
             <option *ngFor="let airport of airports" [attr.airport]="airport" [ngValue]=airport>{{airport.Name}}</option>
           </select>
+          <div class="invalid-feedback" *ngIf="flightForm.touched && flightForm.hasError('notUnique')">
+            Destination and departure airport cannot be the same!
+          </div>
         </div>
         <div class="form-group text-center">
-          <button class="btn btn-success" type="submit">Add flight</button>
+          <button class="btn btn-success" type="submit" [disabled]="flightForm.invalid">Add flight</button>
         </div>
       </form>
     </div>
