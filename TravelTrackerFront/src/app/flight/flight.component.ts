@@ -17,6 +17,7 @@ export class FlightComponent implements OnInit {
     departureAirport: new FormControl(''),
     destinationAirport: new FormControl(''),
   },this.flightUniqueAirportsValidator);
+  
 
   flightUniqueAirportsValidator(group: FormGroup){
     return group.get('departureAirport').value!=group.get('destinationAirport').value ? null : {"notUnique":true}
@@ -25,12 +26,15 @@ export class FlightComponent implements OnInit {
   constructor(private http: HttpClient,private auth: AuthService,private alertify:AlertifyService) {}
 
   ngOnInit() {
+    
     this.getAirports();
   }
   getAirports() {
     this.http.get<Airport[]>(`${environment.baseURL}/api/Trips/GetAirports`).subscribe(
       response => {
         this.airports = response;
+        this.flightForm.controls['departureAirport'].setValue(this.airports[0])
+        this.flightForm.controls['destinationAirport'].setValue(this.airports[1])
       },
       error => {
         console.log(error);
