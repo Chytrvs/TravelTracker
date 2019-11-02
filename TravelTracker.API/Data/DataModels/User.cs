@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using TravelTracker.API.Data.DataModels;
@@ -16,5 +17,10 @@ namespace TravelTracker.API.Data
         [Required]
         public byte[] PasswordSalt { get; set; }
         public List<Flight> UserFlights { get; set; }=new List<Flight>();
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastActive { get; set; }
+        public Photo Avatar { get; set; }
+        public string Bio { get; set; }
+        public Airport FavouriteAirport { get; set; }
     }
 }
