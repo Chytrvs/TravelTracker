@@ -36,13 +36,15 @@ namespace TravelTracker.API.Controllers
         
         [HttpPost]
         
-        public async Task<IActionResult> AddFlight(FlightRequestDTO flightRequestDTO)
+        public async Task<IActionResult> AddFlight(NewFlightDTO newFlightDTO)
         {
-            var flight = await _repository.AddFlight(flightRequestDTO);
+            var flight = await _repository.AddFlight(newFlightDTO);
             if (flight != null)
             {
                 return new JsonResult(flight,new JsonSerializerSettings(){
-                    Formatting=Formatting.Indented
+                    Formatting=Formatting.Indented,
+                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+
                 });
             }
             return BadRequest("One of the airports doesnt exist!");

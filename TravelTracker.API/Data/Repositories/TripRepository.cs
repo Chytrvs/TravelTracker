@@ -25,37 +25,36 @@ namespace TravelTracker.API.Data.Repositories
         /// <summary>
         /// Adds new flight to database
         /// </summary>
-        public async Task<FlightResponseDTO> AddFlight(FlightRequestDTO flightRequestDTO)
+        public async Task<Flight> AddFlight(NewFlightDTO newFlightDTO)
         {
             //Gets user with specified username
-            User user = await _userRepo.GetUser(flightRequestDTO.Username);
+            User user = await _userRepo.GetUser(newFlightDTO.Username);
             if (user == null)
                 return null;
             //Gets departure airport with specified acronym
-            Airport departureAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == flightRequestDTO.DepartureAirportAcronym);
+            Airport departureAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == newFlightDTO.DepartureAirportAcronym);
             if (departureAirport == null)
                 return null;
             //Gets destination airport with specified acronym
-            Airport destinationAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == flightRequestDTO.DestinationAirportAcronym);
+            Airport destinationAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == newFlightDTO.DestinationAirportAcronym);
             if (destinationAirport == null)
                 return null;
             //Creates new flight with data provided from db
+            DateTime FlightDateConverted;
+            bool result = DateTime.TryParse(newFlightDTO.FlightDate,out FlightDateConverted);
             Flight flight = new Flight
             {
                 FlightDepartureAirport = departureAirport,
                 FlightDestinationAirport = destinationAirport,
                 User = user,
-                CreatedDate=DateTime.Now
+                Description=newFlightDTO.Description,
+                CreatedDate=DateTime.UtcNow,
+                FlightDate=FlightDateConverted
             };
             //Adds new flight to the database
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
-            return new FlightResponseDTO
-            {
-                Username = user.Username,
-                DepartureAirport = departureAirport,
-                DestinationAirport = destinationAirport
-            };
+            return flight;
         }
 
         /// <summary>

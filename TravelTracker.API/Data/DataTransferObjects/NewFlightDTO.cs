@@ -14,7 +14,7 @@ namespace TravelTracker.API.Data.DataTransferObjects
         [StringLength(4),MinLength(4)]
         public string DestinationAirportAcronym { get; set; }
         public string Description { get; set; }
-        public DateTime FlightDate { get; set; }
+        public string FlightDate { get; set; }
         
     }
 }
