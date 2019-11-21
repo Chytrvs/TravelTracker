@@ -19,7 +19,6 @@ namespace TravelTracker.API.Data
         public List<Flight> UserFlights { get; set; }=new List<Flight>();
         public DateTime CreatedDate { get; set; }
         public DateTime LastActive { get; set; }
-        public Photo Avatar { get; set; }
         public string Bio { get; set; }
         public Airport FavouriteAirport { get; set; }
     }

@@ -8,7 +8,6 @@ namespace TravelTracker.API.Data
         public DbSet<User> Users{get;set;}
         public DbSet<Flight> Flights{get;set;}
         public DbSet<Airport> Airports { get; set; }
-        public DbSet<Photo> Photos {get; set;}
         public TravelTrackerDbContext(DbContextOptions<TravelTrackerDbContext> options):base(options)
         {
             

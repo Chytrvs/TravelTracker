@@ -17,6 +17,6 @@ namespace TravelTracker.API.Data.DataModels
          public User User { get; set; }
          public String Description { get; set; }
          public DateTime CreatedDate { get; set; }
-         public ICollection<Photo> Photos { get; set; }
+        public DateTime FlightDate { get; set; }
     }
 }
