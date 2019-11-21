@@ -14,5 +14,6 @@ namespace TravelTracker.API.Data.DataTransferObjects
         [EmailAddress]
         [StringLength(64)]
         public string Email { get; set; }
+        public Airport FavouriteAirport { get; set; }
     }
 }
