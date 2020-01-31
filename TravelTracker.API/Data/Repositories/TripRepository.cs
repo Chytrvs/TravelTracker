@@ -44,8 +44,8 @@ namespace TravelTracker.API.Data.Repositories
             bool result = DateTime.TryParse(newFlightDTO.FlightDate,out FlightDateConverted);
             Flight flight = new Flight
             {
-                FlightDepartureAirport = departureAirport,
-                FlightDestinationAirport = destinationAirport,
+                DepartureAirport = departureAirport,
+                DestinationAirport = destinationAirport,
                 User = user,
                 Description=newFlightDTO.Description,
                 CreatedDate=DateTime.UtcNow,
@@ -75,7 +75,7 @@ namespace TravelTracker.API.Data.Repositories
         /// <summary>
         /// Provides list of flights that are attached to specific user
         /// </summary>
-        public async Task<List<FlightResponseDTO>> GetUserFlights(string username)
+        public async Task<List<Flight>> GetUserFlights(string username)
         {
             //Check if user exists
             if (!await _userRepo.DoesUserExist(username))
@@ -83,22 +83,25 @@ namespace TravelTracker.API.Data.Repositories
             //Get user, his flights and airports attached to those flights
             var user = await _context.Users
             .Include(u => u.UserFlights)
-                .ThenInclude(u => u.FlightDepartureAirport)
+                .ThenInclude(u => u.DepartureAirport)
             .Include(u => u.UserFlights)
-                .ThenInclude(u => u.FlightDestinationAirport)
+                .ThenInclude(u => u.DestinationAirport)
             .FirstOrDefaultAsync(x => x.Username == username);
             //Check if user has any flights
             if (!user.UserFlights.Any())
                 return null;
             //Create list of flights
-            List<FlightResponseDTO> response = new List<FlightResponseDTO>();
+            List<Flight> response = new List<Flight>();
             foreach (var flight in user.UserFlights)
             {
-                response.Add(new FlightResponseDTO
+                response.Add(new Flight
                 {
-                    Username = user.Username,
-                    DepartureAirport = flight.FlightDepartureAirport,
-                    DestinationAirport = flight.FlightDestinationAirport
+                    DepartureAirport = flight.DepartureAirport,
+                    DestinationAirport = flight.DestinationAirport,
+                    Description=flight.Description,
+                    CreatedDate=flight.CreatedDate,
+                    FlightDate=flight.FlightDate,
+                    User=flight.User
                 });
             }
             return response;
@@ -106,17 +109,20 @@ namespace TravelTracker.API.Data.Repositories
         /// <summary>
         /// Provides list of all airports in database
         /// </summary>
-        public async Task<List<AirportResponseDTO>> GetAirports()
+        public async Task<List<Airport>> GetAirports()
         {
-            List<AirportResponseDTO> response = new List<AirportResponseDTO>();
+            List<Airport> response = new List<Airport>();
             var airports = await _context.Airports.ToListAsync();
             foreach (var airport in airports)
             {
-                response.Add(new AirportResponseDTO
+                response.Add(new Airport
                 {
                     Name = airport.Name,
-                    Acronym = airport.Acronym
-
+                    Acronym = airport.Acronym,
+                    Latitude=airport.Latitude,
+                    Longitude=airport.Longitude
+                    
+                    
                 });
             }
             return response;
