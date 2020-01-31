@@ -9,9 +9,9 @@ namespace TravelTracker.API.Data.DataModels
         [Key]
         public int Id { get; set; }
         
-        public Airport FlightDepartureAirport { get; set; }
+        public Airport DepartureAirport { get; set; }
         
-        public Airport FlightDestinationAirport { get; set; }
+        public Airport DestinationAirport { get; set; }
 
          public int UserId { get; set; }
          public User User { get; set; }

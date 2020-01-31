@@ -34,7 +34,7 @@ namespace TravelTracker.API.Data.Repositories
         public async Task<User> GetUser(string username)
         {
            if(!await DoesUserExist(username))
-           return null;
+                return null;
            return await _context.Users.FirstAsync(x=>x.Username==username);
         }
     }

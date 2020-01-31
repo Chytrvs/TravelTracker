@@ -1,12 +1,12 @@
-using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace TravelTracker.API.Data.DataTransferObjects
 {
-    public class FlightForMapDTO
-    {
-        public string Username { get; set; }
+    public class FlightEndpointsDTO
+    {   
+        [Required]
         public Airport DepartureAirport { get; set; }
+        [Required]
         public Airport DestinationAirport { get; set; }
-        public DateTime FlightDate { get; set; }
     }
 }
