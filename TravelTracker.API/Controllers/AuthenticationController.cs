@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Collections.Generic;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
+using AutoMapper;
 
 namespace TravelTracker.API.Controllers
 {   
@@ -21,10 +22,13 @@ namespace TravelTracker.API.Controllers
         private readonly IAuthenticationRepository repository;
         private readonly IConfiguration _configuration;
 
-        public AuthenticationController(IAuthenticationRepository repository, IConfiguration Configuration)
+        private IMapper _Mapper { get; }
+
+        public AuthenticationController(IAuthenticationRepository repository, IConfiguration Configuration, IMapper mapper)
         {
             this.repository = repository;
             _configuration = Configuration;
+            _Mapper = mapper;
         }
         /// <summary>
         /// Registers user provided in RegisterUserDTO
@@ -40,7 +44,8 @@ namespace TravelTracker.API.Controllers
             {
                 return BadRequest("User already exists");
             }
-            return StatusCode(200);
+            var userForReturn = _Mapper.Map<DetailedUserDTO>(user);
+            return Ok(userForReturn);
 
         }
         /// <summary>

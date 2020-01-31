@@ -16,6 +16,8 @@ using TravelTracker.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using AutoMapper;
+using TravelTracker.API.Helpers;
 
 namespace TravelTracker.API
 {
@@ -35,6 +37,7 @@ namespace TravelTracker.API
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.AddCors();
+            services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
             services.AddScoped<ITripRepository,TripRepository>();
             services.AddScoped<IUserRepository,UserRepository>();
