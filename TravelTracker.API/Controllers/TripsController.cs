@@ -114,7 +114,7 @@ namespace TravelTracker.API.Controllers
             if (airports != null)
             {
                 var AirportsToReturn=_mapper.Map<IEnumerable<AirportResponseDTO>>(airports);
-                return new JsonResult(airports, new JsonSerializerSettings()
+                return new JsonResult(AirportsToReturn, new JsonSerializerSettings()
                 {
                     Formatting = Formatting.Indented
                 });
