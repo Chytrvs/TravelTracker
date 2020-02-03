@@ -4,7 +4,7 @@ import { AuthService } from 'src/services/auth.service';
 import { AlertifyService } from 'src/services/alertify.service';
 import { Airport } from '../interfaces/airport';
 import { environment } from 'src/environments/environment';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: "app-flight",
@@ -14,8 +14,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 export class FlightComponent implements OnInit {
   airports: Airport[];
   flightForm = new FormGroup({
-    departureAirport: new FormControl(''),
-    destinationAirport: new FormControl(''),
+    departureAirport: new FormControl(null,[Validators.required]),
+    destinationAirport: new FormControl(null,[Validators.required]),
   },this.flightUniqueAirportsValidator);
   
 
@@ -33,8 +33,6 @@ export class FlightComponent implements OnInit {
     this.http.get<Airport[]>(`${environment.baseURL}/api/Trips/GetAirports`).subscribe(
       response => {
         this.airports = response;
-        this.flightForm.controls['departureAirport'].setValue(this.airports[0])
-        this.flightForm.controls['destinationAirport'].setValue(this.airports[1])
       },
       error => {
         console.log(error);
