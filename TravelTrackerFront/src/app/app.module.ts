@@ -15,6 +15,8 @@ import { AuthGuard } from "./_guards/auth.guard";
 import { AlertifyService } from "src/services/alertify.service";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptor } from "./../services/TokenInterceptor";
+import { NgSelectModule } from '@ng-select/ng-select';
+
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { TokenInterceptor } from "./../services/TokenInterceptor";
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
+    NgSelectModule,
     BsDropdownModule.forRoot()
   ],
   providers: [
