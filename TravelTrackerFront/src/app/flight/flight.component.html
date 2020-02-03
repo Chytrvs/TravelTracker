@@ -6,20 +6,25 @@
         <hr />
         <div class="form-group">
           <label for="departureAirport">Departure airport</label>
-          <select [ngClass]="{'is-invalid': flightForm.invalid && flightForm.touched}"
-           id="departureAirport" class="form-control" formControlName="departureAirport">
-           
-           <option *ngFor="let airport of airports"   [ngValue]=airport>{{airport.Name}}</option>
-          </select>
+            <ng-select
+              [ngClass]="{'is-invalid': flightForm.get('departureAirport').hasError('required') && flightForm.get('departureAirport').touched}"
+              formControlName="departureAirport"
+              [items]="airports"
+              bindLabel="Name"
+              placeholder="Departure airport"
+            ></ng-select>
         </div>
         <div class="form-group">
           <label for="destinationAirport">Destination airport</label>
-          <select [ngClass]="{'is-invalid': flightForm.invalid && flightForm.touched}"
-           id="destinationAirport" class="form-control" formControlName="destinationAirport">
-            <option *ngFor="let airport of airports" [ngValue]=airport>{{airport.Name}}</option>
-          </select>
-          <div class="invalid-feedback" *ngIf="flightForm.touched && flightForm.hasError('notUnique')">
-            Destination and departure airport cannot be the same!
+            <ng-select
+              [ngClass]="{'is-invalid': flightForm.get('destinationAirport').hasError('required') && flightForm.get('destinationAirport').touched}"
+              formControlName="destinationAirport"
+              [items]="airports"
+              bindLabel="Name"
+              placeholder="Destination airport"
+            ></ng-select>
+          <div class="text-danger" *ngIf="flightForm.touched && flightForm.hasError('notUnique')&& !flightForm.get('departureAirport').hasError('required')" >
+            <small>Destination and departure airport cannot be the same!</small>
           </div>
         </div>
         <div class="form-group text-center">
