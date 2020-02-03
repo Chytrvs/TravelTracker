@@ -1,0 +1,4 @@
+::ng-deep ng-select.custom.ng-invalid.ng-touched .ng-select-container {
+    border-color: #eb0404;
+  }
+  

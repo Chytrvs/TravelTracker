@@ -40,9 +40,7 @@ export class RegisterComponent implements OnInit {
         Validators.minLength(6),
         Validators.maxLength(64)
       ]),
-      favouriteAirport: new FormControl("", [
-        Validators.required
-      ])
+      favouriteAirport: new FormControl(null,[Validators.required])
     });
   }
   register() {

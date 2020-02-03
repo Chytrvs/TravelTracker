@@ -3,13 +3,13 @@
   <hr />
 
   <div class="form-group">
-    <input
-      [ngClass]="{'is-invalid': registerForm.get('username').errors && registerForm.get('username').touched}"
-      type="text"
-      class="form-control"
-      formControlName="username"
-      placeholder="Username"
-    />
+      <input
+        [ngClass]="{'is-invalid': registerForm.get('username').errors && registerForm.get('username').touched}"
+        type="text"
+        class="form-control"
+        formControlName="username"
+        placeholder="Username"
+      />
       <div class="invalid-feedback" *ngIf="registerForm.get('username').hasError('required')">
         Username is required!
       </div>
@@ -19,17 +19,18 @@
   </div>
   <div class="form-group">
     <label for="favoriteAirport">What is your favourite airport?</label>
-    <select
-    [ngClass]="{'is-invalid': registerForm.get('favouriteAirport').errors && registerForm.get('favouriteAirport').touched}" 
-    id="favouriteAirport" class="form-control" formControlName="favouriteAirport">
-      <option
-        *ngFor="let airport of airportsFromHome"
-        [attr.airport]="airport" [ngValue]="airport"
-        >{{ airport.Name }}</option
-      >
-    </select>
-    <div class="invalid-feedback" *ngIf="registerForm.get('favouriteAirport').hasError('required')">
-      Favourite airport is required!
+    <div class="form-group">
+        <ng-select
+          [ngClass]="{'is-invalid': registerForm.get('favouriteAirport').errors && registerForm.get('favouriteAirport').touched}"
+          formControlName="favouriteAirport"
+          [items]="airportsFromHome"
+          bindLabel="Name"
+          class="custom"
+          placeholder="Favourite airport"
+        ></ng-select>
+      <div class="text-danger" *ngIf="registerForm.get('favouriteAirport').hasError('required')&& registerForm.get('favouriteAirport').touched">
+      <small>Favourite airport is required!</small>
+      </div>
     </div>
   </div>
   <div class="form-group">
@@ -47,7 +48,6 @@
       You have to use proper email address!
     </div>
   </div>
-
   <div class="form-group">
     <input
       [ngClass]="{'is-invalid': registerForm.get('password').errors && registerForm.get('password').touched}"
@@ -63,11 +63,11 @@
       Password has to be between 6 and 64 characters!
     </div>
   </div>
-
-  <div class="form-group text-center">
+<div class="form-group text-center">
     <button class="btn btn-success" type="submit" [disabled]="!registerForm.valid">Register</button>
     <button class="btn btn-default" type="button" (click)="cancel()">
       Cancel
     </button>
   </div>
 </form>
+
