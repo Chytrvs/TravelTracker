@@ -19,14 +19,7 @@ namespace TravelTracker.API.Data.Repositories
         /// </summary>
         public async Task<bool> DoesUserExist(string username)
         {
-            if (await _context.Users.AnyAsync(x => x.Username == username))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            return await _context.Users.AnyAsync(x => x.Username == username);
         }
         /// <summary>
         /// Returns user with specified username
@@ -36,6 +29,10 @@ namespace TravelTracker.API.Data.Repositories
            if(!await DoesUserExist(username))
                 return null;
            return await _context.Users.FirstAsync(x=>x.Username==username);
+        }
+        public async Task<bool> IsEmailTaken(string email)
+        {
+            return await _context.Users.AnyAsync(x => x.Email == email);
         }
     }
 }

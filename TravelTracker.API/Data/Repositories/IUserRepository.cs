@@ -5,5 +5,6 @@ namespace TravelTracker.API.Data.Repositories
     {
         Task<User> GetUser(string username);
         Task<bool> DoesUserExist(string username);
+        Task<bool> IsEmailTaken(string email);
     }
 }
