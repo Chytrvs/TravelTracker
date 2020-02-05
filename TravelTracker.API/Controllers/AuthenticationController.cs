@@ -11,24 +11,26 @@ using System.Collections.Generic;
 using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
+using TravelTracker.API.Helpers;
 
 namespace TravelTracker.API.Controllers
-{   
+{
 
     [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthenticationController : ControllerBase
     {
-        private readonly IAuthenticationRepository repository;
-        private readonly IConfiguration _configuration;
+        private readonly IAuthenticationRepository _authRepository;
+        private readonly IMapper _Mapper;
+        private readonly IJWTTokenBuilder _jWTTokenBuilder;
+        private readonly IUserRepository _userRepository;
 
-        private IMapper _Mapper { get; }
-
-        public AuthenticationController(IAuthenticationRepository repository, IConfiguration Configuration, IMapper mapper)
+        public AuthenticationController(IAuthenticationRepository authRepository, IUserRepository userRepository, IMapper mapper, IJWTTokenBuilder JWTTokenBuilder)
         {
-            this.repository = repository;
-            _configuration = Configuration;
+            _userRepository = userRepository;
+            _authRepository=authRepository;
             _Mapper = mapper;
+            _jWTTokenBuilder = JWTTokenBuilder;
         }
         /// <summary>
         /// Registers user provided in RegisterUserDTO
@@ -39,11 +41,11 @@ namespace TravelTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> RegisterUser(RegisterUserDTO RegisterUserDTO)
         {
-            User user = await repository.RegisterUser(RegisterUserDTO.Username, RegisterUserDTO.Password, RegisterUserDTO.Email);
-            if (user == null)
-            {
-                return BadRequest("User already exists");
-            }
+            if(await _userRepository.DoesUserExist(RegisterUserDTO.Username))
+                return BadRequest("Username is already taken");
+            if(await _userRepository.IsEmailTaken(RegisterUserDTO.Email))
+                return BadRequest("Email address is already taken");
+            User user = await _authRepository.RegisterUser(RegisterUserDTO.Username, RegisterUserDTO.Password, RegisterUserDTO.Email);
             var userForReturn = _Mapper.Map<DetailedUserDTO>(user);
             return Ok(userForReturn);
 
@@ -57,36 +59,13 @@ namespace TravelTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> LoginUser(LoginUserDTO LoginUserDTO)
         {
-            //Checks if user exists
-            User user = await repository.LoginUser(LoginUserDTO.Username, LoginUserDTO.Password);
-            if (user == null)
-            {
+            if(!await _userRepository.DoesUserExist(LoginUserDTO.Username))
                 return Unauthorized();
-            }
-            //Creates token descriptor based on data provided by JWT configuration file and database response
-            var signingKey = _configuration.GetSection("Jwt:SigningSecret").Value;
-            var expiryDuration = int.Parse(_configuration.GetSection("Jwt:ExpiryDuration").Value);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Issuer = null,
-                Audience = null,
-                IssuedAt = DateTime.UtcNow,
-                NotBefore = DateTime.UtcNow,
-                Expires = DateTime.UtcNow.AddMinutes(expiryDuration),
-                Subject = new ClaimsIdentity(new List<Claim> {
-                        new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                        new Claim(ClaimTypes.Name, user.Username)
-                    }),
-                SigningCredentials = new SigningCredentials
-                (new SymmetricSecurityKey(Encoding.UTF8.GetBytes(signingKey)), SecurityAlgorithms.HmacSha512Signature)
-            };
-            //Generates JWT token based on token descriptor
-            var jwtTokenHandler = new JwtSecurityTokenHandler();
-            var jwtToken = jwtTokenHandler.CreateJwtSecurityToken(tokenDescriptor);
-            var token = jwtTokenHandler.WriteToken(jwtToken);
+            User user = await _authRepository.LoginUser(LoginUserDTO.Username, LoginUserDTO.Password);
+            if(user == null)
+                return Unauthorized();
+            string token=_jWTTokenBuilder.BuildJWTToken(user);
             return Ok(new { token });
-
-
         }
 
     }
