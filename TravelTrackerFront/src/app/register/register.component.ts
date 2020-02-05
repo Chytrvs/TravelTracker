@@ -51,13 +51,13 @@ export class RegisterComponent implements OnInit {
           this.alertify.success("Registered successfuly");
         },
         err => {
-          this.alertify.error(err.error.title);
+          this.alertify.error(err.error);
         },
         () => {
           this.authService.login({
-            username: this.user.Username,
-            password: this.user.Password
-          });
+            username: this.user.username,
+            password: this.user.password
+          }).subscribe();
         }
       );
     }
