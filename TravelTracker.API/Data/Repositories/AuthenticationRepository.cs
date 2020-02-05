@@ -40,15 +40,17 @@ namespace TravelTracker.API.Data.Repositories
         public async Task<User> LoginUser(string username, string password)
         {
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
-            if (user == null)
+            if (VerifyUser(password, user))
             {
-                return null;
+                user.LastActive=DateTime.UtcNow;
+                await SaveAll();
+                return user;
             }
-            if (!VerifyUser(password, user))
-            {
-                return null;
-            }
-            return user;
+            return null;
+        }
+        public async Task<bool> SaveAll()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
         /// <summary>
         /// Decodes hashed password from provided user object, then it compares that password with the one provided in a login query
@@ -82,20 +84,17 @@ namespace TravelTracker.API.Data.Repositories
         /// </summary>
         public async Task<User> RegisterUser(string username, string password, string email)
         {
-            if (await _userRepo.DoesUserExist(username))
-            {
-                return null;
-            }
             HashedPasswordBundle hashedBundle = HashPassword(password);
             User user = new User
             {
                 PasswordHash = hashedBundle.PasswordHash,
                 PasswordSalt = hashedBundle.PasswordSalt,
                 Username = username,
-                Email = email
+                Email = email,
+                CreatedDate=DateTime.UtcNow
             };
             await _context.Users.AddAsync(user);
-            await _context.SaveChangesAsync();
+            await SaveAll();
             return user;
         }
         /// <summary>
