@@ -41,6 +41,7 @@ namespace TravelTracker.API
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
             services.AddScoped<ITripRepository,TripRepository>();
             services.AddScoped<IUserRepository,UserRepository>();
+            services.AddScoped<IJWTTokenBuilder,JWTTokenBuilder>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer
                 (options=>{
                     var signingKey = Configuration.GetSection("Jwt:SigningSecret").Value;
