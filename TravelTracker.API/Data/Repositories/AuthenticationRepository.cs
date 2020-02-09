@@ -40,13 +40,19 @@ namespace TravelTracker.API.Data.Repositories
         public async Task<User> LoginUser(string username, string password)
         {
             User user = await _context.Users.FirstOrDefaultAsync(x => x.Username == username);
-            if (VerifyUser(password, user))
+            if (!VerifyUser(password, user))
             {
-                user.LastActive=DateTime.UtcNow;
-                await SaveAll();
+                return null;
+            }
+            else
+            {
+                UpdateUserLastActiveDate(user);
                 return user;
             }
-            return null;
+        }
+        private async void UpdateUserLastActiveDate(User user){
+            user.LastActive=DateTime.UtcNow;
+            await SaveAll();
         }
         public async Task<bool> SaveAll()
         {
