@@ -14,7 +14,7 @@ import Vector from "ol/source/Vector.js";
 import Style from "ol/style/Style.js";
 import Stroke from "ol/style/stroke.js";
 
-import { HttpClient, HttpParams, HttpHeaders } from "@angular/common/http";
+import { HttpClient } from "@angular/common/http";
 import { AuthService } from "src/services/auth.service";
 import { AlertifyService } from "src/services/alertify.service";
 import { Flight } from '../interfaces/flight';
@@ -31,17 +31,17 @@ export class MapComponent implements OnInit {
   layer: OlVectorLayer;
   tilelayer: OlTileLayer;
   view: OlView;
-  format: GeoJSON;
-  vector: Vector;
+  format: GeoJSON = new GeoJSON({
+    featureProjection: "EPSG:3857"
+  });
+  vector: Vector = new Vector();
+  
   style: Style;
   stroke: Stroke;
-
-  private options = {
-    headers: new HttpHeaders().set("Content-Type", "application/json")
-  };
-  NumberOfFlights: number;
-  NumberOfAirportsVisited: number;
-  DistanceTraveled: any;
+  NumberOfFlights: number = 0;
+  NumberOfAirportsVisited: number = 0;
+  TotalDistanceTraveled: any =0;
+  AirportsVisited = new Collections.Set(String);
 
   constructor(
     private http: HttpClient,
@@ -50,9 +50,6 @@ export class MapComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.NumberOfFlights = 0;
-    this.NumberOfAirportsVisited = 0;
-    this.DistanceTraveled = 0;
     this.getFlights();
   }
   getFlights() {
@@ -60,36 +57,67 @@ export class MapComponent implements OnInit {
     .subscribe(
       data => {
         this.alertify.success("Successfully loaded your flights");
-        this.DrawMap(this.GenerateCurves(data));
+        this.CalculateFlightsStatistics(data);
+        this.GenerateFlightsCurvedVector(data);
+        this.DrawMap();
       },
       error => {
         this.alertify.message(
           "In order to see your flights displayed on a map, add some of them in a first place"
         );
-        this.DrawMap(new Vector());
+        this.DrawMap();
       }
     );
   }
 
-  GenerateCurves(flightsData: Flight[]) {
-    var AirportsVisited = new Collections.Set(String);
-    this.vector = new Vector();
-    this.format = new GeoJSON({
-      featureProjection: "EPSG:3857"
-    });
+
+  CalculateFlightsStatistics(flights: Flight[]){
+    this.SetNumberOfFlights(flights);
+
+    flights.forEach(flight=>{
+        this.UpdateTotalDistanceTraveled(flight);
+        this.UpdateNumberOfVisitedAirports(flight);
+    })
+
+    this.NumberOfAirportsVisited = this.AirportsVisited.size();
+    this.FormatDistance();
+  } 
+
+  SetNumberOfFlights(flights: Flight[]){
+    this.NumberOfFlights=Object.keys(flights).length;
+  }
+
+  UpdateTotalDistanceTraveled(flight: Flight){
+    this.TotalDistanceTraveled += sphere.getDistance(
+      [
+        flight.DepartureAirport.Longitude,
+        flight.DepartureAirport.Latitude],
+      [
+        flight.DestinationAirport.Longitude,
+        flight.DestinationAirport.Latitude
+      ]
+    );
+  }
+
+  UpdateNumberOfVisitedAirports(flight: Flight){
+    this.AirportsVisited.add(flight.DepartureAirport.Acronym);
+    this.AirportsVisited.add(flight.DestinationAirport.Acronym);
+  }
+
+  FormatDistance() {
+    if (this.TotalDistanceTraveled >= 1000) 
+    {
+      this.TotalDistanceTraveled =
+        Math.round((this.TotalDistanceTraveled / 1000) * 100) / 100 + " " + "km";
+    } 
+    else 
+    {
+      this.TotalDistanceTraveled = Math.round(this.TotalDistanceTraveled) + " " + "m";
+    }
+  }
+
+  GenerateFlightsCurvedVector(flightsData: Flight[]) {
     flightsData.forEach(Flight => {
-      AirportsVisited.add(Flight.DepartureAirport.Acronym);
-      AirportsVisited.add(Flight.DestinationAirport.Acronym);
-      this.NumberOfFlights++;
-      this.DistanceTraveled += sphere.getDistance(
-        [
-          Flight.DepartureAirport.Longitude,
-          Flight.DepartureAirport.Latitude],
-        [
-          Flight.DestinationAirport.Longitude,
-          Flight.DestinationAirport.Latitude
-        ]
-      );
       var generator = new arcjs.GreatCircle(
         {
           x: Flight.DepartureAirport.Longitude,
@@ -100,8 +128,9 @@ export class MapComponent implements OnInit {
           y: Flight.DestinationAirport.Latitude
         }
       );
-      var n = 50; // n of points
-      var coords = generator.Arc(n).geometries[0].coords;
+
+      var numberOfPoints = 50; 
+      var coords = generator.Arc(numberOfPoints).geometries[0].coords;
       var geojson = {
         type: "Feature",
         geometry: { type: "LineString", coordinates: coords },
@@ -109,19 +138,9 @@ export class MapComponent implements OnInit {
       };
       this.vector.addFeatures(this.format.readFeatures(geojson));
     });
-    this.NumberOfAirportsVisited = AirportsVisited.size();
-    this.FormatDistance();
-    return this.vector;
   }
-  FormatDistance() {
-    if (this.DistanceTraveled >= 1000) {
-      this.DistanceTraveled =
-        Math.round((this.DistanceTraveled / 1000) * 100) / 100 + " " + "km";
-    } else {
-      this.DistanceTraveled = Math.round(this.DistanceTraveled) + " " + "m";
-    }
-  }
-  DrawMap(vector: Vector) {
+
+  DrawMap() {
     this.layer = new OlVectorLayer({
       source: this.vector,
       style: new Style({
