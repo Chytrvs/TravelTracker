@@ -46,11 +46,11 @@ namespace TravelTracker.API.Data.Repositories
             }
             else
             {
-                UpdateUserLastActiveDate(user);
+                await UpdateUserLastActiveDate(user);
                 return user;
             }
         }
-        private async void UpdateUserLastActiveDate(User user){
+        private async Task UpdateUserLastActiveDate(User user){
             user.LastActive=DateTime.UtcNow;
             await SaveAll();
         }
