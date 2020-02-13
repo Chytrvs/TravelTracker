@@ -117,12 +117,11 @@ namespace TravelTracker.API.Data.Repositories
             {
                 response.Add(new Airport
                 {
+                    Id=airport.Id,
                     Name = airport.Name,
                     Acronym = airport.Acronym,
                     Latitude=airport.Latitude,
                     Longitude=airport.Longitude
-                    
-                    
                 });
             }
             return response;

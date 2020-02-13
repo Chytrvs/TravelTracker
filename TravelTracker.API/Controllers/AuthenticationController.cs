@@ -3,13 +3,6 @@ using TravelTracker.API.Data.Repositories;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Security.Claims;
-using System.Collections.Generic;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
 using AutoMapper;
 using TravelTracker.API.Helpers;
 
@@ -45,7 +38,7 @@ namespace TravelTracker.API.Controllers
                 return BadRequest("Username is already taken");
             if(await _userRepository.IsEmailTaken(RegisterUserDTO.Email))
                 return BadRequest("Email address is already taken");
-            User user = await _authRepository.RegisterUser(RegisterUserDTO.Username, RegisterUserDTO.Password, RegisterUserDTO.Email);
+            User user = await _authRepository.RegisterUser(RegisterUserDTO);
             var userForReturn = _Mapper.Map<DetailedUserDTO>(user);
             return Ok(userForReturn);
 

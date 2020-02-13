@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TravelTracker.API.Data.DataTransferObjects;
 
 namespace TravelTracker.API.Data.Repositories
 {
@@ -88,17 +89,18 @@ namespace TravelTracker.API.Data.Repositories
         /// <summary>
         /// Checks if user already exists in database. If user doesnt exist, password is hashed and user is added to database
         /// </summary>
-        public async Task<User> RegisterUser(string username, string password, string email)
+        public async Task<User> RegisterUser(RegisterUserDTO userDTO)
         {
-            HashedPasswordBundle hashedBundle = HashPassword(password);
+            HashedPasswordBundle hashedBundle = HashPassword(userDTO.Password);
             User user = new User
             {
+                Username = userDTO.Username,
+                Email = userDTO.Email,
                 PasswordHash = hashedBundle.PasswordHash,
                 PasswordSalt = hashedBundle.PasswordSalt,
-                Username = username,
-                Email = email,
-                CreatedDate=DateTime.UtcNow
+                CreatedDate=DateTime.UtcNow,
             };
+            user.FavouriteAirport=await _context.Airports.FirstOrDefaultAsync(x=>x.Id==userDTO.FavouriteAirport.Id);
             await _context.Users.AddAsync(user);
             await SaveAll();
             return user;

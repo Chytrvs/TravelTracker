@@ -28,7 +28,7 @@ namespace TravelTracker.API.Data.Repositories
         {
            if(!await DoesUserExist(username))
                 return null;
-           return await _context.Users.FirstAsync(x=>x.Username==username);
+           return await _context.Users.Include(x=>x.FavouriteAirport).FirstAsync(x=>x.Username==username);
         }
         public async Task<bool> IsEmailTaken(string email)
         {
