@@ -3,6 +3,7 @@ import { Component, OnInit } from "@angular/core";
 import * as arcjs from "node_modules/arc/arc.js";
 import * as Collections from "typescript-collections";
 import * as sphere from "node_modules/ol/sphere.js";
+import {fromLonLat} from 'ol/proj';
 
 import OlMap from "ol/Map";
 import OlOSM from "ol/source/OSM.js";
@@ -19,6 +20,9 @@ import { AuthService } from "src/services/auth.service";
 import { AlertifyService } from "src/services/alertify.service";
 import { Flight } from '../interfaces/flight';
 import { environment } from 'src/environments/environment';
+import { User } from '../interfaces/user';
+import { forkJoin } from 'rxjs';
+import { Airport } from '../interfaces/airport';
 
 @Component({
   selector: "app-map",
@@ -50,24 +54,26 @@ export class MapComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getFlights();
+    this.loadData();
   }
-  getFlights() {
-    this.http.get<Flight[]>(`${environment.baseURL}/api/Trips/GetUserFlights/`+this.auth.decodedToken.unique_name)
-    .subscribe(
-      data => {
-        this.alertify.success("Successfully loaded your flights");
-        this.CalculateFlightsStatistics(data);
-        this.GenerateFlightsCurvedVector(data);
-        this.DrawMap();
-      },
-      error => {
-        this.alertify.message(
-          "In order to see your flights displayed on a map, add some of them in a first place"
-        );
-        this.DrawMap();
-      }
-    );
+  getUser(){
+    return this.http.get<User>(`${environment.baseURL}/api/User/GetUser/`+this.auth.decodedToken.unique_name);
+  }
+  getFlights(){
+    return this.http.get<Flight[]>(`${environment.baseURL}/api/Trips/GetUserFlights/`+this.auth.decodedToken.unique_name)
+  }
+  loadData(){
+    forkJoin(this.getUser(), this.getFlights()).subscribe(([user, flights]) => {
+      this.alertify.success("Successfully loaded your flights");
+      this.CalculateFlightsStatistics(flights);
+      this.GenerateFlightsCurvedVector(flights);
+      this.DrawMap(user.FavouriteAirport.Latitude,user.FavouriteAirport.Longitude);
+    },
+    error=>{
+      this.alertify.message("In order to see your flights displayed on a map, add some of them in a first place");
+      this.DrawMap(0,0);
+    }
+)
   }
 
 
@@ -140,7 +146,8 @@ export class MapComponent implements OnInit {
     });
   }
 
-  DrawMap() {
+  DrawMap(FavouriteAirportLatitude: Number, FavouriteAirportLongitude: Number) {
+    const FavouriteAirportCoordinates = fromLonLat([FavouriteAirportLongitude,FavouriteAirportLatitude]);
     this.layer = new OlVectorLayer({
       source: this.vector,
       style: new Style({
@@ -159,7 +166,7 @@ export class MapComponent implements OnInit {
       ],
       target: "map",
       view: new OlView({
-        center: [0, 0],
+        center: FavouriteAirportCoordinates,
         zoom: 2.5,
         minZoom: 2,
         maxZoom: 19
