@@ -5,7 +5,7 @@ using TravelTracker.API.Data.DataTransferObjects;
 
 namespace TravelTracker.API.Data.Repositories
 {
-    public interface ITripRepository
+    public interface IFlightRepository
     {
         Task<Flight> AddFlight(NewFlightDTO newFlightDTO);
         Task<Airport> AddAirport(Airport airport);

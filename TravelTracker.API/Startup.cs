@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using TravelTracker.API.Data.Repositories;
 using TravelTracker.API.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -39,7 +32,7 @@ namespace TravelTracker.API
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();
-            services.AddScoped<ITripRepository,TripRepository>();
+            services.AddScoped<IFlightRepository,FlightRepository>();
             services.AddScoped<IUserRepository,UserRepository>();
             services.AddScoped<IJWTTokenBuilder,JWTTokenBuilder>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer

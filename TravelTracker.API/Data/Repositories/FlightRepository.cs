@@ -11,13 +11,13 @@ namespace TravelTracker.API.Data.Repositories
     /// <summary>
     /// Implements db queries that provide data about flights and airports
     /// </summary>
-    public class TripRepository : ITripRepository
+    public class FlightRepository : IFlightRepository
     {
         private readonly TravelTrackerDbContext _context;
         private readonly IUserRepository _userRepo;
 
 
-        public TripRepository(TravelTrackerDbContext Context, IUserRepository userRepo)
+        public FlightRepository(TravelTrackerDbContext Context, IUserRepository userRepo)
         {
             _context = Context;
             _userRepo = userRepo;
