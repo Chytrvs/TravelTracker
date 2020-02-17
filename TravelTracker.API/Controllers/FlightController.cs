@@ -8,18 +8,19 @@ using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
 using Newtonsoft.Json;
 using AutoMapper;
+using System.Security.Claims;
 
 namespace TravelTracker.API.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
     [Authorize]
-    public class TripsController : ControllerBase
+    public class FlightController : ControllerBase
     {
-        private readonly ITripRepository _repository;
+        private readonly IFlightRepository _repository;
         private IMapper _mapper { get; }
 
-        public TripsController(ITripRepository repository, IMapper mapper)
+        public FlightController(IFlightRepository repository, IMapper mapper)
         {
             _mapper = mapper;
             _repository = repository;
@@ -37,7 +38,6 @@ namespace TravelTracker.API.Controllers
         /// </summary>
 
         [HttpPost]
-
         public async Task<IActionResult> AddFlight(NewFlightDTO newFlightDTO)
         {
             var flight = await _repository.AddFlight(newFlightDTO);
@@ -82,7 +82,7 @@ namespace TravelTracker.API.Controllers
         /// 
         /// Sample request:
         ///     GET
-        ///     http://localhost:5000/api/Trips/GetUserFlights/login
+        ///     http://localhost:5000/api/Flight/GetUserFlights/login
         /// </summary>
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserFlights(string username)
@@ -104,7 +104,7 @@ namespace TravelTracker.API.Controllers
         /// 
         /// Sample request:
         ///     GET
-        ///     http://localhost:5000/api/Trips/GetAirports
+        ///     http://localhost:5000/api/Flight/GetAirports
         /// </summary>
         [HttpGet]
         [AllowAnonymous]
