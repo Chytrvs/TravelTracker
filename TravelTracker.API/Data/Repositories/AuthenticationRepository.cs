@@ -20,20 +20,7 @@ namespace TravelTracker.API.Data.Repositories
             _context = context;
             _userRepo = userRepo;
         }
-        /// <summary>
-        /// Struct containing PasswordHash and PasswortSalt byte arrays, used to pass data between HashPassword and RegisterUser methods.
-        /// </summary>
-        private struct HashedPasswordBundle
-        {
 
-            public byte[] PasswordHash { get; set; }
-            public byte[] PasswordSalt { get; set; }
-            public HashedPasswordBundle(byte[] passwordHash, byte[] passwordSalt)
-            {
-                PasswordHash = passwordHash;
-                PasswordSalt = passwordSalt;
-            }
-        }
         /// <summary>
         /// Executes database query that verifies if provided user exists, then it uses VerifyUser method to check if provided password and login are matching.
         /// If both conditions are met, it returns users data, otherwise returns null
@@ -87,11 +74,11 @@ namespace TravelTracker.API.Data.Repositories
             return true;
         }
         /// <summary>
-        /// Checks if user already exists in database. If user doesnt exist, password is hashed and user is added to database
+        /// Hashes users password and adds user to the database
         /// </summary>
         public async Task<User> RegisterUser(RegisterUserDTO userDTO)
         {
-            HashedPasswordBundle hashedBundle = HashPassword(userDTO.Password);
+            var hashedBundle = HashPassword(userDTO.Password);
             User user = new User
             {
                 Username = userDTO.Username,
@@ -106,17 +93,14 @@ namespace TravelTracker.API.Data.Repositories
             return user;
         }
         /// <summary>
-        /// Hashes password using SHA512 algorithm, returns HashedPasswordBundle containing hashed password and its salt
+        /// Hashes password using SHA512 algorithm, returns tuple containing hashed password and its salt
         /// </summary>
-        private HashedPasswordBundle HashPassword(string password)
+        private (byte[] PasswordHash, byte[] PasswordSalt) HashPassword(string password)
         {
             var hmac = new System.Security.Cryptography.HMACSHA512();
             using (hmac)
             {
-                return new HashedPasswordBundle(
-                    hmac.ComputeHash(Encoding.UTF8.GetBytes(password)),
-                    hmac.Key
-                );
+                return (hmac.ComputeHash(Encoding.UTF8.GetBytes(password)),hmac.Key);
             }
         }
     }
