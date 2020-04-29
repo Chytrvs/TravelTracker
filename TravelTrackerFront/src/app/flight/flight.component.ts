@@ -30,7 +30,7 @@ export class FlightComponent implements OnInit {
     this.getAirports();
   }
   getAirports() {
-    this.http.get<Airport[]>(`${environment.baseURL}/api/Trips/GetAirports`).subscribe(
+    this.http.get<Airport[]>(`${environment.baseURL}/api/Flight/GetAirports`).subscribe(
       response => {
         this.airports = response;
       },
@@ -42,7 +42,7 @@ export class FlightComponent implements OnInit {
   addFlight() {
    if(this.flightForm.valid){
      this.http
-      .post(`${environment.baseURL}/api/Trips/AddFlight`, {
+      .post(`${environment.baseURL}/api/Flight/AddFlight`, {
         Username: this.auth.decodedToken.unique_name,
         DepartureAirportAcronym: this.flightForm.get('departureAirport').value.Acronym,
         DestinationAirportAcronym: this.flightForm.get('destinationAirport').value.Acronym

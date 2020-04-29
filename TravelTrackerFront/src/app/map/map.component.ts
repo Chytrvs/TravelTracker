@@ -60,7 +60,7 @@ export class MapComponent implements OnInit {
     return this.http.get<User>(`${environment.baseURL}/api/User/GetUser/`+this.auth.decodedToken.unique_name);
   }
   getFlights(){
-    return this.http.get<Flight[]>(`${environment.baseURL}/api/Trips/GetUserFlights/`+this.auth.decodedToken.unique_name)
+    return this.http.get<Flight[]>(`${environment.baseURL}/api/Flight/GetUserFlights/`+this.auth.decodedToken.unique_name)
   }
   loadData(){
     forkJoin(this.getUser(), this.getFlights()).subscribe(([user, flights]) => {
