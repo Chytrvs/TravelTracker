@@ -67,7 +67,7 @@ export class MapComponent implements OnInit {
       this.alertify.success("Successfully loaded your flights");
       this.CalculateFlightsStatistics(flights);
       this.GenerateFlightsCurvedVector(flights);
-      this.DrawMap(user.FavouriteAirport.Latitude,user.FavouriteAirport.Longitude);
+      this.DrawMap(user.favouriteAirport.latitude,user.favouriteAirport.longitude);
     },
     error=>{
       this.alertify.message("In order to see your flights displayed on a map, add some of them in a first place");
@@ -96,18 +96,18 @@ export class MapComponent implements OnInit {
   UpdateTotalDistanceTraveled(flight: Flight){
     this.TotalDistanceTraveled += sphere.getDistance(
       [
-        flight.DepartureAirport.Longitude,
-        flight.DepartureAirport.Latitude],
+        flight.departureAirport.longitude,
+        flight.departureAirport.latitude],
       [
-        flight.DestinationAirport.Longitude,
-        flight.DestinationAirport.Latitude
+        flight.destinationAirport.longitude,
+        flight.destinationAirport.latitude
       ]
     );
   }
 
   UpdateNumberOfVisitedAirports(flight: Flight){
-    this.AirportsVisited.add(flight.DepartureAirport.Acronym);
-    this.AirportsVisited.add(flight.DestinationAirport.Acronym);
+    this.AirportsVisited.add(flight.departureAirport.acronym);
+    this.AirportsVisited.add(flight.destinationAirport.acronym);
   }
 
   FormatDistance() {
@@ -126,12 +126,12 @@ export class MapComponent implements OnInit {
     flightsData.forEach(Flight => {
       var generator = new arcjs.GreatCircle(
         {
-          x: Flight.DepartureAirport.Longitude,
-          y: Flight.DepartureAirport.Latitude
+          x: Flight.departureAirport.longitude,
+          y: Flight.departureAirport.latitude
         },
         {
-          x: Flight.DestinationAirport.Longitude,
-          y: Flight.DestinationAirport.Latitude
+          x: Flight.destinationAirport.longitude,
+          y: Flight.destinationAirport.latitude
         }
       );
 

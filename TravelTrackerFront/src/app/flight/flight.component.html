@@ -10,7 +10,7 @@
               [ngClass]="{'is-invalid': flightForm.get('departureAirport').hasError('required') && flightForm.get('departureAirport').touched}"
               formControlName="departureAirport"
               [items]="airports"
-              bindLabel="Name"
+              bindLabel="name"
               placeholder="Departure airport"
             ></ng-select>
         </div>
@@ -20,7 +20,7 @@
               [ngClass]="{'is-invalid': flightForm.get('destinationAirport').hasError('required') && flightForm.get('destinationAirport').touched}"
               formControlName="destinationAirport"
               [items]="airports"
-              bindLabel="Name"
+              bindLabel="name"
               placeholder="Destination airport"
             ></ng-select>
           <div class="text-danger" *ngIf="flightForm.touched && flightForm.hasError('notUnique')&& !flightForm.get('departureAirport').hasError('required')" >

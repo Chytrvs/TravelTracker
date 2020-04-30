@@ -44,8 +44,8 @@ export class FlightComponent implements OnInit {
      this.http
       .post(`${environment.baseURL}/api/Flight/AddFlight`, {
         Username: this.auth.decodedToken.unique_name,
-        DepartureAirportAcronym: this.flightForm.get('departureAirport').value.Acronym,
-        DestinationAirportAcronym: this.flightForm.get('destinationAirport').value.Acronym
+        DepartureAirportAcronym: this.flightForm.get('departureAirport').value.acronym,
+        DestinationAirportAcronym: this.flightForm.get('destinationAirport').value.acronym
       })
       .subscribe(
         data => {

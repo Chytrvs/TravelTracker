@@ -1,7 +1,7 @@
 export interface Airport {
-    Id:number;
-    Name: string;
-    Acronym: string;
-    Latitude:number;
-    Longitude:number;
+    id:number;
+    name: string;
+    acronym: string;
+    latitude:number;
+    longitude:number;
 }
