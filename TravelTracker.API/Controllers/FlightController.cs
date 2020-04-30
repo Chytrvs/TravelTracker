@@ -39,6 +39,11 @@ namespace TravelTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFlight(NewFlightDTO newFlightDTO)
         {
+            if(newFlightDTO.Username!=User.FindFirst(ClaimTypes.Name).Value)
+            {
+                return Unauthorized();
+            }
+
             var flight = await _repository.AddFlight(newFlightDTO);
             if (flight != null)
             {
@@ -79,6 +84,11 @@ namespace TravelTracker.API.Controllers
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserFlights(string username)
         {
+            if(username!=User.FindFirst(ClaimTypes.Name).Value)
+            {
+                return Unauthorized();
+            }
+            
             IEnumerable<Flight> flights = await _repository.GetUserFlights(username);
             if (flights != null)
             {
