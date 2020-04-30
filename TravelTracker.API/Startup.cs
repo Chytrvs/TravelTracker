@@ -11,6 +11,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using AutoMapper;
 using TravelTracker.API.Helpers;
+using Newtonsoft.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace TravelTracker.API
 {
@@ -28,7 +30,13 @@ namespace TravelTracker.API
         {
             services.AddDbContext<TravelTrackerDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+            .AddJsonOptions(options => 
+            {
+                options.SerializerSettings.Formatting =Formatting.Indented;
+                options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                options.SerializerSettings.ReferenceLoopHandling=ReferenceLoopHandling.Ignore;
+            });                       
             services.AddCors();
             services.AddAutoMapper(typeof(AutoMapperProfiles));
             services.AddScoped<IAuthenticationRepository,AuthenticationRepository>();

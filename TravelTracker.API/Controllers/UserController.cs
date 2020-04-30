@@ -2,7 +2,6 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using TravelTracker.API.Data;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
@@ -27,10 +26,7 @@ namespace TravelTracker.API.Controllers
             if (user != null)
             {
                 var UserToReturn= _mapper.Map<DetailedUserDTO>(user);
-                return new JsonResult(UserToReturn, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+                return new JsonResult(UserToReturn);
             }
             return BadRequest("User cannot be found.");
 

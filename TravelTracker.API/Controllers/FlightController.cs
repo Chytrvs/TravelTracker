@@ -6,7 +6,6 @@ using TravelTracker.API.Data;
 using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
 using TravelTracker.API.Data.Repositories;
-using Newtonsoft.Json;
 using AutoMapper;
 using System.Security.Claims;
 
@@ -44,11 +43,7 @@ namespace TravelTracker.API.Controllers
             if (flight != null)
             {
                 var FlightToReturn=_mapper.Map<DetailedFlightDTO>(flight);
-                return new JsonResult(FlightToReturn, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented,
-                    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-                });
+                return new JsonResult(FlightToReturn);
             }
             return BadRequest("One of the airports doesnt exist!");
         }
@@ -70,10 +65,7 @@ namespace TravelTracker.API.Controllers
             Airport newairport = await _repository.AddAirport(airport);
             if (newairport != null)
             {
-                return new JsonResult(newairport, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+                return new JsonResult(newairport);
             }
             return BadRequest("Airport already exists!");
         }
@@ -91,10 +83,7 @@ namespace TravelTracker.API.Controllers
             if (flights != null)
             {
                 var FlightsToReturn= _mapper.Map<IEnumerable<FlightEndpointsDTO>>(flights);
-                return new JsonResult(FlightsToReturn, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+                return new JsonResult(FlightsToReturn);
             }
             return BadRequest("Flights cannot be found.");
 
@@ -114,10 +103,7 @@ namespace TravelTracker.API.Controllers
             if (airports != null)
             {
                 var AirportsToReturn=_mapper.Map<IEnumerable<AirportResponseDTO>>(airports);
-                return new JsonResult(AirportsToReturn, new JsonSerializerSettings()
-                {
-                    Formatting = Formatting.Indented
-                });
+                return new JsonResult(AirportsToReturn);
             }
             return BadRequest("Airports cannot be found.");
 
