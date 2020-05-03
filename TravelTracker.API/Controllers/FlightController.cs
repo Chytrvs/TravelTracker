@@ -124,5 +124,26 @@ namespace TravelTracker.API.Controllers
             return new JsonResult(AirportsToReturn);
 
         }
+
+        [HttpDelete("{userId}/{id}")]
+        public async Task<IActionResult> DeleteFlight(int userId, int id)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+                return Unauthorized();
+
+            var flight=await _repository.GetFlight(id);
+
+            if(flight==null)
+                return NotFound($"Flight id: {id} doesnt exist");
+
+            if(userId!=flight.UserId)
+                return Unauthorized();
+
+            if(await _repository.DeleteFlight(flight))
+                return Ok();
+
+            return BadRequest("Failed to delete flight");
+        }
+
     }
 }

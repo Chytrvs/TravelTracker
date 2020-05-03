@@ -54,7 +54,7 @@ namespace TravelTracker.API.Data.Repositories
                 CreatedDate=DateTime.UtcNow,
                 FlightDate=isDateParsedSuccessfuly?FlightDateConverted:DateTime.UtcNow
             };
-            
+
             //Adds new flight to the database
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
@@ -94,6 +94,15 @@ namespace TravelTracker.API.Data.Repositories
         public async Task<List<Airport>> GetAirports()
         {
             return await _context.Airports.ToListAsync();
+        }
+        public async Task<Flight> GetFlight(int id){
+            return await _context.Flights.Include(x=>x.DestinationAirport)
+                                         .Include(x=>x.DepartureAirport)
+                                         .FirstOrDefaultAsync(x=>x.Id==id);
+        }
+        public async Task<bool> DeleteFlight(Flight flight){
+            _context.Remove(flight);
+            return await _context.SaveChangesAsync()>0;
         }
 
     }
