@@ -39,7 +39,7 @@ namespace TravelTracker.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddFlight(NewFlightDTO newFlightDTO)
         {
-            if(newFlightDTO.Username!=User.FindFirst(ClaimTypes.Name).Value)
+            if (newFlightDTO.Username != User.FindFirst(ClaimTypes.Name).Value)
             {
                 return Unauthorized();
             }
@@ -47,7 +47,7 @@ namespace TravelTracker.API.Controllers
             var flight = await _repository.AddFlight(newFlightDTO);
             if (flight != null)
             {
-                var FlightToReturn=_mapper.Map<DetailedFlightDTO>(flight);
+                var FlightToReturn = _mapper.Map<DetailedFlightDTO>(flight);
                 return new JsonResult(FlightToReturn);
             }
             return BadRequest("One of the airports doesnt exist!");
@@ -68,10 +68,12 @@ namespace TravelTracker.API.Controllers
         public async Task<IActionResult> AddAirport(Airport airport)
         {
             Airport newairport = await _repository.AddAirport(airport);
+
             if (newairport != null)
             {
                 return new JsonResult(newairport);
             }
+
             return BadRequest("Airport already exists!");
         }
         /// <summary>
@@ -88,14 +90,16 @@ namespace TravelTracker.API.Controllers
             {
                 return Unauthorized();
             }
-            
-            IEnumerable<Flight> flights = await _repository.GetUserFlights(username);
-            if (flights != null)
+
+            var flights = await _repository.GetUserFlights(username);
+
+            if (flights.Count==0)
             {
-                var FlightsToReturn= _mapper.Map<IEnumerable<FlightEndpointsDTO>>(flights);
-                return new JsonResult(FlightsToReturn);
+                return BadRequest("Flights cannot be found.");
             }
-            return BadRequest("Flights cannot be found.");
+
+            var FlightsToReturn = _mapper.Map<IEnumerable<FlightEndpointsDTO>>(flights);
+            return new JsonResult(FlightsToReturn);
 
         }
         /// <summary>
@@ -110,12 +114,14 @@ namespace TravelTracker.API.Controllers
         public async Task<IActionResult> GetAirports()
         {
             var airports = await _repository.GetAirports();
-            if (airports != null)
+
+            if (airports.Count==0)
             {
-                var AirportsToReturn=_mapper.Map<IEnumerable<AirportResponseDTO>>(airports);
-                return new JsonResult(AirportsToReturn);
+                return BadRequest("Airports cannot be found.");
             }
-            return BadRequest("Airports cannot be found.");
+
+            var AirportsToReturn = _mapper.Map<IEnumerable<AirportResponseDTO>>(airports);
+            return new JsonResult(AirportsToReturn);
 
         }
     }

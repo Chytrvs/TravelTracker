@@ -31,17 +31,20 @@ namespace TravelTracker.API.Data.Repositories
             User user = await _userRepo.GetUser(newFlightDTO.Username);
             if (user == null)
                 return null;
+
             //Gets departure airport with specified acronym
             Airport departureAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == newFlightDTO.DepartureAirportAcronym);
             if (departureAirport == null)
                 return null;
+
             //Gets destination airport with specified acronym
             Airport destinationAirport = await _context.Airports.FirstOrDefaultAsync(x => x.Acronym == newFlightDTO.DestinationAirportAcronym);
             if (destinationAirport == null)
                 return null;
+
             //Creates new flight with data provided from db
             DateTime FlightDateConverted;
-            bool result = DateTime.TryParse(newFlightDTO.FlightDate,out FlightDateConverted);
+            bool isDateParsedSuccessfuly = DateTime.TryParse(newFlightDTO.FlightDate,out FlightDateConverted);
             Flight flight = new Flight
             {
                 DepartureAirport = departureAirport,
@@ -49,8 +52,9 @@ namespace TravelTracker.API.Data.Repositories
                 User = user,
                 Description=newFlightDTO.Description,
                 CreatedDate=DateTime.UtcNow,
-                FlightDate=FlightDateConverted
+                FlightDate=isDateParsedSuccessfuly?FlightDateConverted:DateTime.UtcNow
             };
+            
             //Adds new flight to the database
             await _context.Flights.AddAsync(flight);
             await _context.SaveChangesAsync();
@@ -77,55 +81,19 @@ namespace TravelTracker.API.Data.Repositories
         /// </summary>
         public async Task<List<Flight>> GetUserFlights(string username)
         {
-            //Check if user exists
-            if (!await _userRepo.DoesUserExist(username))
-                return null;
-            //Get user, his flights and airports attached to those flights
-            var user = await _context.Users
-            .Include(u => u.UserFlights)
-                .ThenInclude(u => u.DepartureAirport)
-            .Include(u => u.UserFlights)
-                .ThenInclude(u => u.DestinationAirport)
-            .FirstOrDefaultAsync(x => x.Username == username);
-            //Check if user has any flights
-            if (!user.UserFlights.Any())
-                return null;
-            //Create list of flights
-            List<Flight> response = new List<Flight>();
-            foreach (var flight in user.UserFlights)
-            {
-                response.Add(new Flight
-                {
-                    DepartureAirport = flight.DepartureAirport,
-                    DestinationAirport = flight.DestinationAirport,
-                    Description=flight.Description,
-                    CreatedDate=flight.CreatedDate,
-                    FlightDate=flight.FlightDate,
-                    User=flight.User
-                });
-            }
-            return response;
+            //find flights attached to given username, and then include destination and departure airports to them
+            return await _context.Flights.Where(x=>x.User.Username==username)
+                                         .Include(x=>x.DepartureAirport)
+                                         .Include(x=>x.DestinationAirport)
+                                         .ToListAsync();
         }
+        
         /// <summary>
         /// Provides list of all airports in database
         /// </summary>
         public async Task<List<Airport>> GetAirports()
         {
-            List<Airport> response = new List<Airport>();
-            var airports = await _context.Airports.ToListAsync();
-            foreach (var airport in airports)
-            {
-                response.Add(new Airport
-                {
-                    Id=airport.Id,
-                    Name = airport.Name,
-                    Acronym = airport.Acronym,
-                    Latitude=airport.Latitude,
-                    Longitude=airport.Longitude
-                });
-            }
-            return response;
-
+            return await _context.Airports.ToListAsync();
         }
 
     }
