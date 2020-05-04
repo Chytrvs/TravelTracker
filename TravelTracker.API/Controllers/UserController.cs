@@ -8,8 +8,9 @@ using TravelTracker.API.Data.Repositories;
 
 namespace TravelTracker.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/user/")]
     [ApiController]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _userRepository;
@@ -23,6 +24,18 @@ namespace TravelTracker.API.Controllers
         public async Task<IActionResult> GetUser(string username)
         {
             User user = await _userRepository.GetUser(username);
+            if (user != null)
+            {
+                var UserToReturn= _mapper.Map<DetailedUserDTO>(user);
+                return new JsonResult(UserToReturn);
+            }
+            return BadRequest("User cannot be found.");
+
+        }
+        [HttpGet("{UserId:int}")]
+        public async Task<IActionResult> GetUser(int UserId)
+        {
+            User user = await _userRepository.GetUser(UserId);
             if (user != null)
             {
                 var UserToReturn= _mapper.Map<DetailedUserDTO>(user);

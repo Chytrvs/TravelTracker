@@ -57,7 +57,7 @@ export class MapComponent implements OnInit {
     this.loadData();
   }
   getUser(){
-    return this.http.get<User>(`${environment.baseURL}/api/User/GetUser/`+this.auth.decodedToken.unique_name);
+    return this.http.get<User>(`${environment.baseURL}/api/user/`+this.auth.decodedToken.unique_name);
   }
   getFlights(){
     return this.http.get<Flight[]>(`${environment.baseURL}/api/user/${this.auth.decodedToken.nameid}/flights`)

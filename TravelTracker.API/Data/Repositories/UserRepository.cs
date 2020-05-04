@@ -30,6 +30,11 @@ namespace TravelTracker.API.Data.Repositories
                 return null;
            return await _context.Users.Include(x=>x.FavouriteAirport).FirstAsync(x=>x.Username==username);
         }
+        public async Task<User> GetUser(int userId){
+            if(!await _context.Users.AnyAsync(x=>x.Id==userId))
+                return null;
+            return await _context.Users.Include(x=>x.FavouriteAirport).FirstAsync(x=>x.Id==userId);
+        }
         public async Task<bool> IsEmailTaken(string email)
         {
             return await _context.Users.AnyAsync(x => x.Email == email);
