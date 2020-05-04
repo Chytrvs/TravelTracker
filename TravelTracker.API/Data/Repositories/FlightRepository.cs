@@ -79,10 +79,10 @@ namespace TravelTracker.API.Data.Repositories
         /// <summary>
         /// Provides list of flights that are attached to specific user
         /// </summary>
-        public async Task<List<Flight>> GetUserFlights(string username)
+        public async Task<List<Flight>> GetUserFlights(int userId)
         {
             //find flights attached to given username, and then include destination and departure airports to them
-            return await _context.Flights.Where(x=>x.User.Username==username)
+            return await _context.Flights.Where(x=>x.UserId==userId)
                                          .Include(x=>x.DepartureAirport)
                                          .Include(x=>x.DestinationAirport)
                                          .ToListAsync();

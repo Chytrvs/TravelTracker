@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace TravelTracker.API.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/user/{userId}/")]
     [ApiController]
     [Authorize]
     public class FlightController : ControllerBase
@@ -36,7 +36,7 @@ namespace TravelTracker.API.Controllers
         ///     }
         /// </summary>
 
-        [HttpPost]
+        [HttpPost("flight")]
         public async Task<IActionResult> AddFlight(NewFlightDTO newFlightDTO)
         {
             if (newFlightDTO.Username != User.FindFirst(ClaimTypes.Name).Value)
@@ -52,46 +52,23 @@ namespace TravelTracker.API.Controllers
             }
             return BadRequest("One of the airports doesnt exist!");
         }
-        /// <summary>
-        /// Adds new airport
-        /// 
-        /// Sample request:
-        ///     POST
-        ///     {
-        ///       "Name": "Philip S W Goldson International Airport",
-        ///       "Acronym": "MZBZ",
-        ///       "Latitude": "17.5386",
-        ///       "Longitude": "-88.3042"
-        ///     }
-        /// </summary>
-        [HttpPost]
-        public async Task<IActionResult> AddAirport(Airport airport)
-        {
-            Airport newairport = await _repository.AddAirport(airport);
 
-            if (newairport != null)
-            {
-                return new JsonResult(newairport);
-            }
-
-            return BadRequest("Airport already exists!");
-        }
         /// <summary>
         /// Provides flights attached to specified user
         /// 
         /// Sample request:
         ///     GET
-        ///     http://localhost:5000/api/Flight/GetUserFlights/login
+        ///     http://localhost:5000/api/user/{userId}/flights
         /// </summary>
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUserFlights(string username)
+        [HttpGet("flights")]
+        public async Task<IActionResult> GetUserFlights(int userId)
         {
-            if(username!=User.FindFirst(ClaimTypes.Name).Value)
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
             {
                 return Unauthorized();
             }
 
-            var flights = await _repository.GetUserFlights(username);
+            var flights = await _repository.GetUserFlights(userId);
 
             if (flights.Count==0)
             {
@@ -103,46 +80,56 @@ namespace TravelTracker.API.Controllers
 
         }
         /// <summary>
-        /// Provides all airports in database
+        /// Deletes specified flight
         /// 
         /// Sample request:
-        ///     GET
-        ///     http://localhost:5000/api/Flight/GetAirports
+        ///     DELETE
+        ///     http://localhost:5000/api/user/{userId}/flight/{flightID}
         /// </summary>
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAirports()
-        {
-            var airports = await _repository.GetAirports();
-
-            if (airports.Count==0)
-            {
-                return BadRequest("Airports cannot be found.");
-            }
-
-            var AirportsToReturn = _mapper.Map<IEnumerable<AirportResponseDTO>>(airports);
-            return new JsonResult(AirportsToReturn);
-
-        }
-
-        [HttpDelete("{userId}/{id}")]
-        public async Task<IActionResult> DeleteFlight(int userId, int id)
+        [HttpDelete("flight/{flightID}")]
+        public async Task<IActionResult> DeleteFlight(int userId, int flightID)
         {
             if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
                 return Unauthorized();
 
-            var flight=await _repository.GetFlight(id);
+            var flight=await _repository.GetFlight(flightID);
 
             if(flight==null)
-                return NotFound($"Flight id: {id} doesnt exist");
-
-            if(userId!=flight.UserId)
-                return Unauthorized();
+                return NotFound($"Flight id: {flightID} doesnt exist");
 
             if(await _repository.DeleteFlight(flight))
                 return Ok();
 
             return BadRequest("Failed to delete flight");
+        }
+        /// <summary>
+        /// Returns specified flight
+        /// 
+        /// Sample request:
+        ///     GET
+        ///     http://localhost:5000/api/user/{userId}/flight/{flightID}
+        /// </summary>
+        [HttpGet("flight/{flightID}")]
+        public async Task<IActionResult> GetUserFlight(int userId, int flightID)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            var flight = await _repository.GetFlight(flightID);
+
+            if (flight==null)
+            {
+                return BadRequest($"Flight id: {flightID} doesnt exist");
+            }
+
+            if(userId!=flight.UserId)
+                return Unauthorized();
+
+            var FlightToReturn = _mapper.Map<FlightEndpointsDTO>(flight);
+            return new JsonResult(FlightToReturn);
+
         }
 
     }

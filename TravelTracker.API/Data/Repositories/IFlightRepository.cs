@@ -12,6 +12,6 @@ namespace TravelTracker.API.Data.Repositories
         Task<bool> DeleteFlight(Flight flight);
         Task<Airport> AddAirport(Airport airport);
         Task<List<Airport>> GetAirports();
-        Task<List<Flight>> GetUserFlights(string username);
+        Task<List<Flight>> GetUserFlights(int userId);
     }
 }
