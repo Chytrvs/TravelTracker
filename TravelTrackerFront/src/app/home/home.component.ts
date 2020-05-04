@@ -26,7 +26,7 @@ export class HomeComponent implements OnInit {
     this.registerMode=!this.registerMode;
   }
   getAirports(){
-    this.http.get<Airport[]>(`${environment.baseURL}/api/Flight/GetAirports`).subscribe(response=>{
+    this.http.get<Airport[]>(`${environment.baseURL}/api/Airports`).subscribe(response=>{
       this.airports=response;
     },error=>{
       console.log(error);
