@@ -13,6 +13,8 @@ namespace TravelTracker.API.Helpers
             CreateMap<Flight,DetailedFlightDTO>();
             CreateMap<Flight,FlightEndpointsDTO>();
             CreateMap<Airport,AirportResponseDTO>();
+            CreateMap<UpdateFlightDTO,Flight>().ForMember(d=>d.FlightDate,d=>d
+                                               .MapFrom(x=>FlightDateResolver.ResolveFlightDate(x.FlightDate)));
         }
     }
 }

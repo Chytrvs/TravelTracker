@@ -131,6 +131,28 @@ namespace TravelTracker.API.Controllers
             return new JsonResult(FlightToReturn);
 
         }
+        [HttpPut("flight/{flightID}")]
+        public async Task<IActionResult> UpdateFlight(int userId, int flightID,UpdateFlightDTO updateFlightDTO)
+        {
+            if (userId != int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value))
+            {
+                return Unauthorized();
+            }
+
+            var flight=await _repository.GetFlight(flightID);
+
+            if (flight==null)
+            {
+                return BadRequest($"Flight id: {flightID} doesnt exist");
+            }
+
+            _mapper.Map(updateFlightDTO,flight);
+
+            if(await _repository.SaveAll()){
+                return Ok("Flight updated successfuly");
+            }
+            return BadRequest("Flight could not be updated");
+        }
 
     }
 }

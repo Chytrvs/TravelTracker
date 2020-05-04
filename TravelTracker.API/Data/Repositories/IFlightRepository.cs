@@ -13,5 +13,6 @@ namespace TravelTracker.API.Data.Repositories
         Task<Airport> AddAirport(Airport airport);
         Task<List<Airport>> GetAirports();
         Task<List<Flight>> GetUserFlights(int userId);
+        Task<bool> SaveAll();
     }
 }

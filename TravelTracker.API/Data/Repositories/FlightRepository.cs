@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TravelTracker.API.Data.DataModels;
 using TravelTracker.API.Data.DataTransferObjects;
 using System;
+using TravelTracker.API.Helpers;
 
 namespace TravelTracker.API.Data.Repositories
 {
@@ -43,8 +44,6 @@ namespace TravelTracker.API.Data.Repositories
                 return null;
 
             //Creates new flight with data provided from db
-            DateTime FlightDateConverted;
-            bool isDateParsedSuccessfuly = DateTime.TryParse(newFlightDTO.FlightDate,out FlightDateConverted);
             Flight flight = new Flight
             {
                 DepartureAirport = departureAirport,
@@ -52,7 +51,7 @@ namespace TravelTracker.API.Data.Repositories
                 User = user,
                 Description=newFlightDTO.Description,
                 CreatedDate=DateTime.UtcNow,
-                FlightDate=isDateParsedSuccessfuly?FlightDateConverted:DateTime.UtcNow
+                FlightDate=FlightDateResolver.ResolveFlightDate(newFlightDTO.FlightDate)
             };
 
             //Adds new flight to the database
@@ -103,6 +102,11 @@ namespace TravelTracker.API.Data.Repositories
         public async Task<bool> DeleteFlight(Flight flight){
             _context.Remove(flight);
             return await _context.SaveChangesAsync()>0;
+        }
+
+        public async Task<bool> SaveAll()
+        {
+            return await _context.SaveChangesAsync() > 0;
         }
 
     }
